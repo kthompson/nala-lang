@@ -161,6 +161,52 @@ namespace Nala
             }
         }
 
+        public TNode this[int index]
+        {
+            get
+            {
+                if (Node == null)
+                {
+                    return null;
+                }
+                else if (Node.IsList)
+                {
+                    Debug.Assert(index >= 0);
+                    Debug.Assert(index <= Node.SlotCount);
+
+                    return (TNode)Node.GetSlot(index);
+                }
+                else if (index == 0)
+                {
+                    return (TNode)Node;
+                }
+                else
+                {
+                    throw new InvalidOperationException();
+                }
+            }
+        }
+
+        public SeparatedSyntaxList<TOther> AsSeparatedList<TOther>() where TOther : SyntaxNode
+        {
+            return new SeparatedSyntaxList<TOther>(this);
+        }
+
+        public static implicit operator SyntaxList<TNode>(TNode node)
+        {
+            return new SyntaxList<TNode>(node);
+        }
+
+        public static implicit operator SyntaxList<TNode>(SyntaxList<SyntaxNode> nodes)
+        {
+            return new SyntaxList<TNode>(nodes.Node);
+        }
+
+        public static implicit operator SyntaxList<SyntaxNode>(SyntaxList<TNode> nodes)
+        {
+            return new SyntaxList<SyntaxNode>(nodes.Node);
+        }
+
         private static SyntaxList<TNode> CreateList(List<TNode> items)
         {
             if (items.Count == 0)

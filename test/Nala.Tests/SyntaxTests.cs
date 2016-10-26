@@ -20,7 +20,7 @@ namespace Nala.Tests
         
         private static CompilationUnitSyntax GenerateCompilationUnit()
         {
-            return SyntaxFactory.CompilationUnit(default(NamespaceDeclarationSyntax), new SyntaxList<OpenDirectiveSyntax>(), new SyntaxList<TopLevelMemberDeclarationSyntax>(), SyntaxFactory.Token(SyntaxKind.EndOfFileToken));
+            return SyntaxFactory.CompilationUnit(null, new SyntaxList<OpenDirectiveSyntax>(), new SyntaxList<TypeDeclarationSyntax>(), SyntaxFactory.Token(SyntaxKind.EndOfFileToken));
         }
         
         private static NamespaceDeclarationSyntax GenerateNamespaceDeclaration()
@@ -35,17 +35,52 @@ namespace Nala.Tests
         
         private static TraitDeclarationSyntax GenerateTraitDeclaration()
         {
-            return SyntaxFactory.TraitDeclaration(SyntaxFactory.Token(SyntaxKind.TraitKeyword), GenerateIdentifierName(), SyntaxFactory.Token(SyntaxKind.OpenBracketToken), new SyntaxList<BaseMemberDeclarationSyntax>(), SyntaxFactory.Token(SyntaxKind.CloseBracketToken));
+            return SyntaxFactory.TraitDeclaration(SyntaxFactory.Token(SyntaxKind.TraitKeyword), GenerateIdentifierName(), null);
         }
         
         private static ObjectDeclarationSyntax GenerateObjectDeclaration()
         {
-            return SyntaxFactory.ObjectDeclaration(SyntaxFactory.Token(SyntaxKind.ObjectKeyword), GenerateIdentifierName(), SyntaxFactory.Token(SyntaxKind.OpenBracketToken), new SyntaxList<BaseMemberDeclarationSyntax>(), SyntaxFactory.Token(SyntaxKind.CloseBracketToken));
+            return SyntaxFactory.ObjectDeclaration(SyntaxFactory.Token(SyntaxKind.ObjectKeyword), GenerateIdentifierName(), null);
         }
         
         private static ClassDeclarationSyntax GenerateClassDeclaration()
         {
-            return SyntaxFactory.ClassDeclaration(default(SyntaxToken), SyntaxFactory.Token(SyntaxKind.ClassKeyword), GenerateIdentifierName(), SyntaxFactory.Token(SyntaxKind.OpenBracketToken), new SyntaxList<BaseMemberDeclarationSyntax>(), SyntaxFactory.Token(SyntaxKind.CloseBracketToken));
+            return SyntaxFactory.ClassDeclaration(null, SyntaxFactory.Token(SyntaxKind.ClassKeyword), GenerateIdentifierName(), null, null);
+        }
+        
+        private static MemberBodySyntax GenerateMemberBody()
+        {
+            return SyntaxFactory.MemberBody(SyntaxFactory.Token(SyntaxKind.OpenBracketToken), new SyntaxList<MemberDeclarationSyntax>(), SyntaxFactory.Token(SyntaxKind.CloseBracketToken));
+        }
+        
+        private static ParameterListSyntax GenerateParameterList()
+        {
+            return SyntaxFactory.ParameterList(SyntaxFactory.Token(SyntaxKind.OpenParenToken), new SeparatedSyntaxList<ParameterSyntax>(new SyntaxList<SyntaxNode>()), SyntaxFactory.Token(SyntaxKind.CloseParenToken));
+        }
+        
+        private static ParameterSyntax GenerateParameter()
+        {
+            return SyntaxFactory.Parameter(SyntaxFactory.Identifier("Identifier"), GenerateTypeAnnotation());
+        }
+        
+        private static TypeAnnotationSyntax GenerateTypeAnnotation()
+        {
+            return SyntaxFactory.TypeAnnotation(SyntaxFactory.Token(SyntaxKind.ColonToken), GenerateIdentifierName());
+        }
+        
+        private static MethodDeclarationSyntax GenerateMethodDeclaration()
+        {
+            return SyntaxFactory.MethodDeclaration(SyntaxFactory.Token(SyntaxKind.DefKeyword), GenerateIdentifierName(), null, null, null);
+        }
+        
+        private static AssignmentSyntax GenerateAssignment()
+        {
+            return SyntaxFactory.Assignment(SyntaxFactory.Token(SyntaxKind.EqualsToken), GenerateIdentifierName());
+        }
+        
+        private static BlockSyntax GenerateBlock()
+        {
+            return SyntaxFactory.Block(SyntaxFactory.Token(SyntaxKind.OpenBracketToken), new SyntaxList<MemberDeclarationSyntax>(), SyntaxFactory.Token(SyntaxKind.CloseBracketToken));
         }
         #endregion Red Generators
         
@@ -114,10 +149,8 @@ namespace Nala.Tests
             
             Assert.Equal(SyntaxKind.TraitKeyword, node.TraitKeyword.Kind);
             Assert.NotNull(node.Name);
-            Assert.Equal(SyntaxKind.OpenBracketToken, node.OpenBracketToken.Kind);
-            Assert.NotNull(node.Members);
-            Assert.Equal(SyntaxKind.CloseBracketToken, node.CloseBracketToken.Kind);
-            var newNode = node.WithTraitKeyword(node.TraitKeyword).WithName(node.Name).WithOpenBracketToken(node.OpenBracketToken).WithMembers(node.Members).WithCloseBracketToken(node.CloseBracketToken);
+            Assert.Null(node.Body);
+            var newNode = node.WithTraitKeyword(node.TraitKeyword).WithName(node.Name).WithBody(node.Body);
             Assert.Equal(node, newNode);
         }
         
@@ -128,10 +161,8 @@ namespace Nala.Tests
             
             Assert.Equal(SyntaxKind.ObjectKeyword, node.ObjectKeyword.Kind);
             Assert.NotNull(node.Name);
-            Assert.Equal(SyntaxKind.OpenBracketToken, node.OpenBracketToken.Kind);
-            Assert.NotNull(node.Members);
-            Assert.Equal(SyntaxKind.CloseBracketToken, node.CloseBracketToken.Kind);
-            var newNode = node.WithObjectKeyword(node.ObjectKeyword).WithName(node.Name).WithOpenBracketToken(node.OpenBracketToken).WithMembers(node.Members).WithCloseBracketToken(node.CloseBracketToken);
+            Assert.Null(node.Body);
+            var newNode = node.WithObjectKeyword(node.ObjectKeyword).WithName(node.Name).WithBody(node.Body);
             Assert.Equal(node, newNode);
         }
         
@@ -140,13 +171,95 @@ namespace Nala.Tests
         {
             var node = GenerateClassDeclaration();
             
-            Assert.Equal(SyntaxKind.None, node.CaseKeyword.Kind);
+            Assert.Null(node.CaseKeyword);
             Assert.Equal(SyntaxKind.ClassKeyword, node.ClassKeyword.Kind);
             Assert.NotNull(node.Name);
+            Assert.Null(node.Arguments);
+            Assert.Null(node.Body);
+            var newNode = node.WithCaseKeyword(node.CaseKeyword).WithClassKeyword(node.ClassKeyword).WithName(node.Name).WithArguments(node.Arguments).WithBody(node.Body);
+            Assert.Equal(node, newNode);
+        }
+        
+        [Fact]
+        public void TestMemberBodyFactoryAndProperties()
+        {
+            var node = GenerateMemberBody();
+            
             Assert.Equal(SyntaxKind.OpenBracketToken, node.OpenBracketToken.Kind);
             Assert.NotNull(node.Members);
             Assert.Equal(SyntaxKind.CloseBracketToken, node.CloseBracketToken.Kind);
-            var newNode = node.WithCaseKeyword(node.CaseKeyword).WithClassKeyword(node.ClassKeyword).WithName(node.Name).WithOpenBracketToken(node.OpenBracketToken).WithMembers(node.Members).WithCloseBracketToken(node.CloseBracketToken);
+            var newNode = node.WithOpenBracketToken(node.OpenBracketToken).WithMembers(node.Members).WithCloseBracketToken(node.CloseBracketToken);
+            Assert.Equal(node, newNode);
+        }
+        
+        [Fact]
+        public void TestParameterListFactoryAndProperties()
+        {
+            var node = GenerateParameterList();
+            
+            Assert.Equal(SyntaxKind.OpenParenToken, node.OpenParenToken.Kind);
+            Assert.NotNull(node.Parameters);
+            Assert.Equal(SyntaxKind.CloseParenToken, node.CloseParenToken.Kind);
+            var newNode = node.WithOpenParenToken(node.OpenParenToken).WithParameters(node.Parameters).WithCloseParenToken(node.CloseParenToken);
+            Assert.Equal(node, newNode);
+        }
+        
+        [Fact]
+        public void TestParameterFactoryAndProperties()
+        {
+            var node = GenerateParameter();
+            
+            Assert.Equal(SyntaxKind.IdentifierToken, node.Identifier.Kind);
+            Assert.NotNull(node.TypeAnnotation);
+            var newNode = node.WithIdentifier(node.Identifier).WithTypeAnnotation(node.TypeAnnotation);
+            Assert.Equal(node, newNode);
+        }
+        
+        [Fact]
+        public void TestTypeAnnotationFactoryAndProperties()
+        {
+            var node = GenerateTypeAnnotation();
+            
+            Assert.Equal(SyntaxKind.ColonToken, node.ColonToken.Kind);
+            Assert.NotNull(node.Type);
+            var newNode = node.WithColonToken(node.ColonToken).WithType(node.Type);
+            Assert.Equal(node, newNode);
+        }
+        
+        [Fact]
+        public void TestMethodDeclarationFactoryAndProperties()
+        {
+            var node = GenerateMethodDeclaration();
+            
+            Assert.Equal(SyntaxKind.DefKeyword, node.DefKeyword.Kind);
+            Assert.NotNull(node.Name);
+            Assert.Null(node.Arguments);
+            Assert.Null(node.ReturnType);
+            Assert.Null(node.Assignment);
+            var newNode = node.WithDefKeyword(node.DefKeyword).WithName(node.Name).WithArguments(node.Arguments).WithReturnType(node.ReturnType).WithAssignment(node.Assignment);
+            Assert.Equal(node, newNode);
+        }
+        
+        [Fact]
+        public void TestAssignmentFactoryAndProperties()
+        {
+            var node = GenerateAssignment();
+            
+            Assert.Equal(SyntaxKind.EqualsToken, node.EqualsToken.Kind);
+            Assert.NotNull(node.Expression);
+            var newNode = node.WithEqualsToken(node.EqualsToken).WithExpression(node.Expression);
+            Assert.Equal(node, newNode);
+        }
+        
+        [Fact]
+        public void TestBlockFactoryAndProperties()
+        {
+            var node = GenerateBlock();
+            
+            Assert.Equal(SyntaxKind.OpenBracketToken, node.OpenBracketToken.Kind);
+            Assert.NotNull(node.Members);
+            Assert.Equal(SyntaxKind.CloseBracketToken, node.CloseBracketToken.Kind);
+            var newNode = node.WithOpenBracketToken(node.OpenBracketToken).WithMembers(node.Members).WithCloseBracketToken(node.CloseBracketToken);
             Assert.Equal(node, newNode);
         }
         #endregion Red Factory and Property Tests

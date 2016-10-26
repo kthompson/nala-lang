@@ -18,6 +18,7 @@ namespace Nala
         public virtual string KindText => this.Kind.ToString();
 
         public virtual bool IsToken => false;
+        public virtual bool IsNode => !IsToken;
 
         public virtual SyntaxToken CreateSeparator<TNode>(SyntaxNode element) 
             where TNode : SyntaxNode

@@ -117,27 +117,19 @@ namespace NalaSyntaxGenerator
 
                     if (IsOptional(field))
                     {
-                        if (isGreen)
-                        {
-                            Write("null");
-                        }
-                        else
-                        {
-                            Write("default({0})", field.Type);
-                        }
+                        Write("null");
                     }
                     else if (IsAnyList(field.Type))
                     {
-                        string typeName;
-                        if (isGreen)
+                        if (IsSeparatedNodeList(field.Type))
                         {
-                            typeName = internalNamespace + field.Type.Replace("<", "<" + nalaNamespace);
+                            Write("new {0}(new SyntaxList<SyntaxNode>())", field.Type);
                         }
                         else
                         {
-                            typeName = (field.Type == "SyntaxList<SyntaxToken>") ? "SyntaxTokenList" : field.Type;
+                            var typeName = field.Type == "SyntaxList<SyntaxToken>" ? "SyntaxTokenList" : field.Type;
+                            Write("new {0}()", typeName);
                         }
-                        Write("new {0}()", typeName);
                     }
                     else if (field.Type == "SyntaxToken")
                     {
@@ -240,25 +232,11 @@ namespace NalaSyntaxGenerator
                 {
                     if (IsOptional(field))
                     {
-                        if (!isGreen && field.Type == "SyntaxToken")
-                        {
-                            WriteLine("Assert.Equal(SyntaxKind.None, node.{0}.Kind);", field.Name);
-                        }
-                        else
-                        {
-                            WriteLine("Assert.Null(node.{0});", field.Name);
-                        }
+                        WriteLine("Assert.Null(node.{0});", field.Name);
                     }
                     else if (field.Type == "SyntaxToken")
                     {
-                        if (!isGreen)
-                        {
-                            WriteLine("Assert.Equal(SyntaxKind.{0}, node.{1}.Kind);", ChooseValidKind(field), field.Name);
-                        }
-                        else
-                        {
-                            WriteLine("Assert.Equal(SyntaxKind.{0}, node.{1}.Kind);", ChooseValidKind(field), field.Name);
-                        }
+                        WriteLine("Assert.Equal(SyntaxKind.{0}, node.{1}.Kind);", ChooseValidKind(field), field.Name);
                     }
                     else
                     {

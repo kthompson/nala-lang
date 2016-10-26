@@ -10,423 +10,699 @@ using System.Threading;
 namespace Nala
 {
     using Nala.Syntax;
-
-
-  public partial class SyntaxVisitor<TResult>
-  {
-    /// <summary>Called when the visitor visits a IdentifierNameSyntax node.</summary>
-    public virtual TResult VisitIdentifierName(IdentifierNameSyntax node)
+    
+    
+    public partial class SyntaxVisitor<TResult>
     {
-      return this.DefaultVisit(node);
+        /// <summary>Called when the visitor visits a IdentifierNameSyntax node.</summary>
+        public virtual TResult VisitIdentifierName(IdentifierNameSyntax node)
+        {
+            return this.DefaultVisit(node);
+        }
+        
+        /// <summary>Called when the visitor visits a QualifiedNameSyntax node.</summary>
+        public virtual TResult VisitQualifiedName(QualifiedNameSyntax node)
+        {
+            return this.DefaultVisit(node);
+        }
+        
+        /// <summary>Called when the visitor visits a CompilationUnitSyntax node.</summary>
+        public virtual TResult VisitCompilationUnit(CompilationUnitSyntax node)
+        {
+            return this.DefaultVisit(node);
+        }
+        
+        /// <summary>Called when the visitor visits a NamespaceDeclarationSyntax node.</summary>
+        public virtual TResult VisitNamespaceDeclaration(NamespaceDeclarationSyntax node)
+        {
+            return this.DefaultVisit(node);
+        }
+        
+        /// <summary>Called when the visitor visits a OpenDirectiveSyntax node.</summary>
+        public virtual TResult VisitOpenDirective(OpenDirectiveSyntax node)
+        {
+            return this.DefaultVisit(node);
+        }
+        
+        /// <summary>Called when the visitor visits a TraitDeclarationSyntax node.</summary>
+        public virtual TResult VisitTraitDeclaration(TraitDeclarationSyntax node)
+        {
+            return this.DefaultVisit(node);
+        }
+        
+        /// <summary>Called when the visitor visits a ObjectDeclarationSyntax node.</summary>
+        public virtual TResult VisitObjectDeclaration(ObjectDeclarationSyntax node)
+        {
+            return this.DefaultVisit(node);
+        }
+        
+        /// <summary>Called when the visitor visits a ClassDeclarationSyntax node.</summary>
+        public virtual TResult VisitClassDeclaration(ClassDeclarationSyntax node)
+        {
+            return this.DefaultVisit(node);
+        }
+        
+        /// <summary>Called when the visitor visits a MemberBodySyntax node.</summary>
+        public virtual TResult VisitMemberBody(MemberBodySyntax node)
+        {
+            return this.DefaultVisit(node);
+        }
+        
+        /// <summary>Called when the visitor visits a ParameterListSyntax node.</summary>
+        public virtual TResult VisitParameterList(ParameterListSyntax node)
+        {
+            return this.DefaultVisit(node);
+        }
+        
+        /// <summary>Called when the visitor visits a ParameterSyntax node.</summary>
+        public virtual TResult VisitParameter(ParameterSyntax node)
+        {
+            return this.DefaultVisit(node);
+        }
+        
+        /// <summary>Called when the visitor visits a TypeAnnotationSyntax node.</summary>
+        public virtual TResult VisitTypeAnnotation(TypeAnnotationSyntax node)
+        {
+            return this.DefaultVisit(node);
+        }
+        
+        /// <summary>Called when the visitor visits a MethodDeclarationSyntax node.</summary>
+        public virtual TResult VisitMethodDeclaration(MethodDeclarationSyntax node)
+        {
+            return this.DefaultVisit(node);
+        }
+        
+        /// <summary>Called when the visitor visits a AssignmentSyntax node.</summary>
+        public virtual TResult VisitAssignment(AssignmentSyntax node)
+        {
+            return this.DefaultVisit(node);
+        }
+        
+        /// <summary>Called when the visitor visits a BlockSyntax node.</summary>
+        public virtual TResult VisitBlock(BlockSyntax node)
+        {
+            return this.DefaultVisit(node);
+        }
     }
-
-    /// <summary>Called when the visitor visits a QualifiedNameSyntax node.</summary>
-    public virtual TResult VisitQualifiedName(QualifiedNameSyntax node)
+    
+    public partial class SyntaxVisitor
     {
-      return this.DefaultVisit(node);
+        /// <summary>Called when the visitor visits a IdentifierNameSyntax node.</summary>
+        public virtual void VisitIdentifierName(IdentifierNameSyntax node)
+        {
+            this.DefaultVisit(node);
+        }
+        
+        /// <summary>Called when the visitor visits a QualifiedNameSyntax node.</summary>
+        public virtual void VisitQualifiedName(QualifiedNameSyntax node)
+        {
+            this.DefaultVisit(node);
+        }
+        
+        /// <summary>Called when the visitor visits a CompilationUnitSyntax node.</summary>
+        public virtual void VisitCompilationUnit(CompilationUnitSyntax node)
+        {
+            this.DefaultVisit(node);
+        }
+        
+        /// <summary>Called when the visitor visits a NamespaceDeclarationSyntax node.</summary>
+        public virtual void VisitNamespaceDeclaration(NamespaceDeclarationSyntax node)
+        {
+            this.DefaultVisit(node);
+        }
+        
+        /// <summary>Called when the visitor visits a OpenDirectiveSyntax node.</summary>
+        public virtual void VisitOpenDirective(OpenDirectiveSyntax node)
+        {
+            this.DefaultVisit(node);
+        }
+        
+        /// <summary>Called when the visitor visits a TraitDeclarationSyntax node.</summary>
+        public virtual void VisitTraitDeclaration(TraitDeclarationSyntax node)
+        {
+            this.DefaultVisit(node);
+        }
+        
+        /// <summary>Called when the visitor visits a ObjectDeclarationSyntax node.</summary>
+        public virtual void VisitObjectDeclaration(ObjectDeclarationSyntax node)
+        {
+            this.DefaultVisit(node);
+        }
+        
+        /// <summary>Called when the visitor visits a ClassDeclarationSyntax node.</summary>
+        public virtual void VisitClassDeclaration(ClassDeclarationSyntax node)
+        {
+            this.DefaultVisit(node);
+        }
+        
+        /// <summary>Called when the visitor visits a MemberBodySyntax node.</summary>
+        public virtual void VisitMemberBody(MemberBodySyntax node)
+        {
+            this.DefaultVisit(node);
+        }
+        
+        /// <summary>Called when the visitor visits a ParameterListSyntax node.</summary>
+        public virtual void VisitParameterList(ParameterListSyntax node)
+        {
+            this.DefaultVisit(node);
+        }
+        
+        /// <summary>Called when the visitor visits a ParameterSyntax node.</summary>
+        public virtual void VisitParameter(ParameterSyntax node)
+        {
+            this.DefaultVisit(node);
+        }
+        
+        /// <summary>Called when the visitor visits a TypeAnnotationSyntax node.</summary>
+        public virtual void VisitTypeAnnotation(TypeAnnotationSyntax node)
+        {
+            this.DefaultVisit(node);
+        }
+        
+        /// <summary>Called when the visitor visits a MethodDeclarationSyntax node.</summary>
+        public virtual void VisitMethodDeclaration(MethodDeclarationSyntax node)
+        {
+            this.DefaultVisit(node);
+        }
+        
+        /// <summary>Called when the visitor visits a AssignmentSyntax node.</summary>
+        public virtual void VisitAssignment(AssignmentSyntax node)
+        {
+            this.DefaultVisit(node);
+        }
+        
+        /// <summary>Called when the visitor visits a BlockSyntax node.</summary>
+        public virtual void VisitBlock(BlockSyntax node)
+        {
+            this.DefaultVisit(node);
+        }
     }
-
-    /// <summary>Called when the visitor visits a CompilationUnitSyntax node.</summary>
-    public virtual TResult VisitCompilationUnit(CompilationUnitSyntax node)
+    
+    public partial class SyntaxRewriter : SyntaxVisitor<SyntaxNode>
     {
-      return this.DefaultVisit(node);
+        public override SyntaxNode VisitIdentifierName(IdentifierNameSyntax node)
+        {
+            var identifier = this.VisitToken(node.Identifier);
+            return node.Update(identifier);
+        }
+        
+        public override SyntaxNode VisitQualifiedName(QualifiedNameSyntax node)
+        {
+            var left = (NameSyntax)this.Visit(node.Left);
+            var dotToken = this.VisitToken(node.DotToken);
+            var right = (SimpleNameSyntax)this.Visit(node.Right);
+            return node.Update(left, dotToken, right);
+        }
+        
+        public override SyntaxNode VisitCompilationUnit(CompilationUnitSyntax node)
+        {
+            var @namespace = (NamespaceDeclarationSyntax)this.Visit(node.Namespace);
+            var usings = this.VisitList(node.Usings);
+            var members = this.VisitList(node.Members);
+            var endOfFileToken = this.VisitToken(node.EndOfFileToken);
+            return node.Update(@namespace, usings, members, endOfFileToken);
+        }
+        
+        public override SyntaxNode VisitNamespaceDeclaration(NamespaceDeclarationSyntax node)
+        {
+            var namespaceKeyword = this.VisitToken(node.NamespaceKeyword);
+            var name = (NameSyntax)this.Visit(node.Name);
+            return node.Update(namespaceKeyword, name);
+        }
+        
+        public override SyntaxNode VisitOpenDirective(OpenDirectiveSyntax node)
+        {
+            var openKeyword = this.VisitToken(node.OpenKeyword);
+            var name = (NameSyntax)this.Visit(node.Name);
+            return node.Update(openKeyword, name);
+        }
+        
+        public override SyntaxNode VisitTraitDeclaration(TraitDeclarationSyntax node)
+        {
+            var traitKeyword = this.VisitToken(node.TraitKeyword);
+            var name = (SimpleNameSyntax)this.Visit(node.Name);
+            var body = (MemberBodySyntax)this.Visit(node.Body);
+            return node.Update(traitKeyword, name, body);
+        }
+        
+        public override SyntaxNode VisitObjectDeclaration(ObjectDeclarationSyntax node)
+        {
+            var objectKeyword = this.VisitToken(node.ObjectKeyword);
+            var name = (SimpleNameSyntax)this.Visit(node.Name);
+            var body = (MemberBodySyntax)this.Visit(node.Body);
+            return node.Update(objectKeyword, name, body);
+        }
+        
+        public override SyntaxNode VisitClassDeclaration(ClassDeclarationSyntax node)
+        {
+            var caseKeyword = this.VisitToken(node.CaseKeyword);
+            var classKeyword = this.VisitToken(node.ClassKeyword);
+            var name = (SimpleNameSyntax)this.Visit(node.Name);
+            var arguments = (ParameterListSyntax)this.Visit(node.Arguments);
+            var body = (MemberBodySyntax)this.Visit(node.Body);
+            return node.Update(caseKeyword, classKeyword, name, arguments, body);
+        }
+        
+        public override SyntaxNode VisitMemberBody(MemberBodySyntax node)
+        {
+            var openBracketToken = this.VisitToken(node.OpenBracketToken);
+            var members = this.VisitList(node.Members);
+            var closeBracketToken = this.VisitToken(node.CloseBracketToken);
+            return node.Update(openBracketToken, members, closeBracketToken);
+        }
+        
+        public override SyntaxNode VisitParameterList(ParameterListSyntax node)
+        {
+            var openParenToken = this.VisitToken(node.OpenParenToken);
+            var parameters = this.VisitList(node.Parameters);
+            var closeParenToken = this.VisitToken(node.CloseParenToken);
+            return node.Update(openParenToken, parameters, closeParenToken);
+        }
+        
+        public override SyntaxNode VisitParameter(ParameterSyntax node)
+        {
+            var identifier = this.VisitToken(node.Identifier);
+            var typeAnnotation = (TypeAnnotationSyntax)this.Visit(node.TypeAnnotation);
+            return node.Update(identifier, typeAnnotation);
+        }
+        
+        public override SyntaxNode VisitTypeAnnotation(TypeAnnotationSyntax node)
+        {
+            var colonToken = this.VisitToken(node.ColonToken);
+            var type = (TypeSyntax)this.Visit(node.Type);
+            return node.Update(colonToken, type);
+        }
+        
+        public override SyntaxNode VisitMethodDeclaration(MethodDeclarationSyntax node)
+        {
+            var defKeyword = this.VisitToken(node.DefKeyword);
+            var name = (SimpleNameSyntax)this.Visit(node.Name);
+            var arguments = (ParameterListSyntax)this.Visit(node.Arguments);
+            var returnType = (TypeAnnotationSyntax)this.Visit(node.ReturnType);
+            var assignment = (AssignmentSyntax)this.Visit(node.Assignment);
+            return node.Update(defKeyword, name, arguments, returnType, assignment);
+        }
+        
+        public override SyntaxNode VisitAssignment(AssignmentSyntax node)
+        {
+            var equalsToken = this.VisitToken(node.EqualsToken);
+            var expression = (ExpressionSyntax)this.Visit(node.Expression);
+            return node.Update(equalsToken, expression);
+        }
+        
+        public override SyntaxNode VisitBlock(BlockSyntax node)
+        {
+            var openBracketToken = this.VisitToken(node.OpenBracketToken);
+            var members = this.VisitList(node.Members);
+            var closeBracketToken = this.VisitToken(node.CloseBracketToken);
+            return node.Update(openBracketToken, members, closeBracketToken);
+        }
     }
-
-    /// <summary>Called when the visitor visits a NamespaceDeclarationSyntax node.</summary>
-    public virtual TResult VisitNamespaceDeclaration(NamespaceDeclarationSyntax node)
+    
+    public static partial class SyntaxFactory
     {
-      return this.DefaultVisit(node);
+        
+        /// <summary>Creates a new IdentifierNameSyntax instance.</summary>
+        public static IdentifierNameSyntax IdentifierName(SyntaxToken identifier)
+        {
+            switch (identifier.Kind)
+            {
+                case SyntaxKind.IdentifierToken:
+                    break;
+                default:
+                    throw new ArgumentException("identifier");
+            }
+            return new IdentifierNameSyntax(SyntaxKind.IdentifierName, identifier);
+        }
+        
+        
+        /// <summary>Creates a new QualifiedNameSyntax instance.</summary>
+        public static QualifiedNameSyntax QualifiedName(NameSyntax left, SyntaxToken dotToken, SimpleNameSyntax right)
+        {
+            if (left == null)
+                throw new ArgumentNullException(nameof(left));
+            
+            switch (dotToken.Kind)
+            {
+                case SyntaxKind.DotToken:
+                    break;
+                default:
+                    throw new ArgumentException("dotToken");
+            }
+            if (right == null)
+                throw new ArgumentNullException(nameof(right));
+            
+            return new QualifiedNameSyntax(SyntaxKind.QualifiedName, left, dotToken, right);
+        }
+        
+        
+        /// <summary>Creates a new QualifiedNameSyntax instance.</summary>
+        public static QualifiedNameSyntax QualifiedName(NameSyntax left, SimpleNameSyntax right)
+        {
+            return SyntaxFactory.QualifiedName(left, SyntaxFactory.Token(SyntaxKind.DotToken), right);
+        }
+        
+        /// <summary>Creates a new CompilationUnitSyntax instance.</summary>
+        public static CompilationUnitSyntax CompilationUnit(NamespaceDeclarationSyntax @namespace, SyntaxList<OpenDirectiveSyntax> usings, SyntaxList<TypeDeclarationSyntax> members, SyntaxToken endOfFileToken)
+        {
+            switch (endOfFileToken.Kind)
+            {
+                case SyntaxKind.EndOfFileToken:
+                    break;
+                default:
+                    throw new ArgumentException("endOfFileToken");
+            }
+            return new CompilationUnitSyntax(SyntaxKind.CompilationUnit, @namespace, usings.Node, members.Node, endOfFileToken);
+        }
+        
+        
+        /// <summary>Creates a new CompilationUnitSyntax instance.</summary>
+        public static CompilationUnitSyntax CompilationUnit(NamespaceDeclarationSyntax @namespace, SyntaxList<OpenDirectiveSyntax> usings, SyntaxList<TypeDeclarationSyntax> members)
+        {
+            return SyntaxFactory.CompilationUnit(@namespace, usings, members, SyntaxFactory.Token(SyntaxKind.EndOfFileToken));
+        }
+        
+        /// <summary>Creates a new CompilationUnitSyntax instance.</summary>
+        public static CompilationUnitSyntax CompilationUnit(NamespaceDeclarationSyntax @namespace = default(NamespaceDeclarationSyntax))
+        {
+            return SyntaxFactory.CompilationUnit(@namespace, default(SyntaxList<OpenDirectiveSyntax>), default(SyntaxList<TypeDeclarationSyntax>), SyntaxFactory.Token(SyntaxKind.EndOfFileToken));
+        }
+        
+        /// <summary>Creates a new NamespaceDeclarationSyntax instance.</summary>
+        public static NamespaceDeclarationSyntax NamespaceDeclaration(SyntaxToken namespaceKeyword, NameSyntax name)
+        {
+            switch (namespaceKeyword.Kind)
+            {
+                case SyntaxKind.NamespaceKeyword:
+                    break;
+                default:
+                    throw new ArgumentException("namespaceKeyword");
+            }
+            if (name == null)
+                throw new ArgumentNullException(nameof(name));
+            
+            return new NamespaceDeclarationSyntax(SyntaxKind.NamespaceDeclaration, namespaceKeyword, name);
+        }
+        
+        
+        /// <summary>Creates a new NamespaceDeclarationSyntax instance.</summary>
+        public static NamespaceDeclarationSyntax NamespaceDeclaration(NameSyntax name)
+        {
+            return SyntaxFactory.NamespaceDeclaration(SyntaxFactory.Token(SyntaxKind.NamespaceKeyword), name);
+        }
+        
+        /// <summary>Creates a new OpenDirectiveSyntax instance.</summary>
+        public static OpenDirectiveSyntax OpenDirective(SyntaxToken openKeyword, NameSyntax name)
+        {
+            switch (openKeyword.Kind)
+            {
+                case SyntaxKind.OpenKeyword:
+                    break;
+                default:
+                    throw new ArgumentException("openKeyword");
+            }
+            if (name == null)
+                throw new ArgumentNullException(nameof(name));
+            
+            return new OpenDirectiveSyntax(SyntaxKind.OpenDirective, openKeyword, name);
+        }
+        
+        
+        /// <summary>Creates a new OpenDirectiveSyntax instance.</summary>
+        public static OpenDirectiveSyntax OpenDirective(NameSyntax name)
+        {
+            return SyntaxFactory.OpenDirective(SyntaxFactory.Token(SyntaxKind.OpenKeyword), name);
+        }
+        
+        /// <summary>Creates a new TraitDeclarationSyntax instance.</summary>
+        public static TraitDeclarationSyntax TraitDeclaration(SyntaxToken traitKeyword, SimpleNameSyntax name, MemberBodySyntax body)
+        {
+            switch (traitKeyword.Kind)
+            {
+                case SyntaxKind.TraitKeyword:
+                    break;
+                default:
+                    throw new ArgumentException("traitKeyword");
+            }
+            if (name == null)
+                throw new ArgumentNullException(nameof(name));
+            
+            return new TraitDeclarationSyntax(SyntaxKind.TraitDeclaration, traitKeyword, name, body);
+        }
+        
+        
+        /// <summary>Creates a new TraitDeclarationSyntax instance.</summary>
+        public static TraitDeclarationSyntax TraitDeclaration(SimpleNameSyntax name, MemberBodySyntax body)
+        {
+            return SyntaxFactory.TraitDeclaration(SyntaxFactory.Token(SyntaxKind.TraitKeyword), name, body);
+        }
+        
+        /// <summary>Creates a new TraitDeclarationSyntax instance.</summary>
+        public static TraitDeclarationSyntax TraitDeclaration(SimpleNameSyntax name)
+        {
+            return SyntaxFactory.TraitDeclaration(SyntaxFactory.Token(SyntaxKind.TraitKeyword), name, default(MemberBodySyntax));
+        }
+        
+        /// <summary>Creates a new ObjectDeclarationSyntax instance.</summary>
+        public static ObjectDeclarationSyntax ObjectDeclaration(SyntaxToken objectKeyword, SimpleNameSyntax name, MemberBodySyntax body)
+        {
+            switch (objectKeyword.Kind)
+            {
+                case SyntaxKind.ObjectKeyword:
+                    break;
+                default:
+                    throw new ArgumentException("objectKeyword");
+            }
+            if (name == null)
+                throw new ArgumentNullException(nameof(name));
+            
+            return new ObjectDeclarationSyntax(SyntaxKind.ObjectDeclaration, objectKeyword, name, body);
+        }
+        
+        
+        /// <summary>Creates a new ObjectDeclarationSyntax instance.</summary>
+        public static ObjectDeclarationSyntax ObjectDeclaration(SimpleNameSyntax name, MemberBodySyntax body)
+        {
+            return SyntaxFactory.ObjectDeclaration(SyntaxFactory.Token(SyntaxKind.ObjectKeyword), name, body);
+        }
+        
+        /// <summary>Creates a new ObjectDeclarationSyntax instance.</summary>
+        public static ObjectDeclarationSyntax ObjectDeclaration(SimpleNameSyntax name)
+        {
+            return SyntaxFactory.ObjectDeclaration(SyntaxFactory.Token(SyntaxKind.ObjectKeyword), name, default(MemberBodySyntax));
+        }
+        
+        /// <summary>Creates a new ClassDeclarationSyntax instance.</summary>
+        public static ClassDeclarationSyntax ClassDeclaration(SyntaxToken caseKeyword, SyntaxToken classKeyword, SimpleNameSyntax name, ParameterListSyntax arguments, MemberBodySyntax body)
+        {
+            if (caseKeyword != null)
+            {
+                switch (caseKeyword.Kind)
+                {
+                    case SyntaxKind.CaseKeyword:
+                    case SyntaxKind.None:
+                        break;
+                    default:
+                        throw new ArgumentException("caseKeyword");
+                }
+            }
+            switch (classKeyword.Kind)
+            {
+                case SyntaxKind.ClassKeyword:
+                    break;
+                default:
+                    throw new ArgumentException("classKeyword");
+            }
+            if (name == null)
+                throw new ArgumentNullException(nameof(name));
+            
+            return new ClassDeclarationSyntax(SyntaxKind.ClassDeclaration, caseKeyword, classKeyword, name, arguments, body);
+        }
+        
+        
+        /// <summary>Creates a new ClassDeclarationSyntax instance.</summary>
+        public static ClassDeclarationSyntax ClassDeclaration(SimpleNameSyntax name, ParameterListSyntax arguments, MemberBodySyntax body)
+        {
+            return SyntaxFactory.ClassDeclaration(default(SyntaxToken), SyntaxFactory.Token(SyntaxKind.ClassKeyword), name, arguments, body);
+        }
+        
+        /// <summary>Creates a new ClassDeclarationSyntax instance.</summary>
+        public static ClassDeclarationSyntax ClassDeclaration(SimpleNameSyntax name)
+        {
+            return SyntaxFactory.ClassDeclaration(default(SyntaxToken), SyntaxFactory.Token(SyntaxKind.ClassKeyword), name, default(ParameterListSyntax), default(MemberBodySyntax));
+        }
+        
+        /// <summary>Creates a new MemberBodySyntax instance.</summary>
+        public static MemberBodySyntax MemberBody(SyntaxToken openBracketToken, SyntaxList<MemberDeclarationSyntax> members, SyntaxToken closeBracketToken)
+        {
+            switch (openBracketToken.Kind)
+            {
+                case SyntaxKind.OpenBracketToken:
+                    break;
+                default:
+                    throw new ArgumentException("openBracketToken");
+            }
+            switch (closeBracketToken.Kind)
+            {
+                case SyntaxKind.CloseBracketToken:
+                    break;
+                default:
+                    throw new ArgumentException("closeBracketToken");
+            }
+            return new MemberBodySyntax(SyntaxKind.MemberBodyDeclaration, openBracketToken, members.Node, closeBracketToken);
+        }
+        
+        
+        /// <summary>Creates a new MemberBodySyntax instance.</summary>
+        public static MemberBodySyntax MemberBody(SyntaxList<MemberDeclarationSyntax> members = default(SyntaxList<MemberDeclarationSyntax>))
+        {
+            return SyntaxFactory.MemberBody(SyntaxFactory.Token(SyntaxKind.OpenBracketToken), members, SyntaxFactory.Token(SyntaxKind.CloseBracketToken));
+        }
+        
+        /// <summary>Creates a new ParameterListSyntax instance.</summary>
+        public static ParameterListSyntax ParameterList(SyntaxToken openParenToken, SeparatedSyntaxList<ParameterSyntax> parameters, SyntaxToken closeParenToken)
+        {
+            switch (openParenToken.Kind)
+            {
+                case SyntaxKind.OpenParenToken:
+                    break;
+                default:
+                    throw new ArgumentException("openParenToken");
+            }
+            switch (closeParenToken.Kind)
+            {
+                case SyntaxKind.CloseParenToken:
+                    break;
+                default:
+                    throw new ArgumentException("closeParenToken");
+            }
+            return new ParameterListSyntax(SyntaxKind.ParameterList, openParenToken, parameters.Node, closeParenToken);
+        }
+        
+        
+        /// <summary>Creates a new ParameterListSyntax instance.</summary>
+        public static ParameterListSyntax ParameterList(SeparatedSyntaxList<ParameterSyntax> parameters = default(SeparatedSyntaxList<ParameterSyntax>))
+        {
+            return SyntaxFactory.ParameterList(SyntaxFactory.Token(SyntaxKind.OpenParenToken), parameters, SyntaxFactory.Token(SyntaxKind.CloseParenToken));
+        }
+        
+        /// <summary>Creates a new ParameterSyntax instance.</summary>
+        public static ParameterSyntax Parameter(SyntaxToken identifier, TypeAnnotationSyntax typeAnnotation)
+        {
+            switch (identifier.Kind)
+            {
+                case SyntaxKind.IdentifierToken:
+                    break;
+                default:
+                    throw new ArgumentException("identifier");
+            }
+            if (typeAnnotation == null)
+                throw new ArgumentNullException(nameof(typeAnnotation));
+            
+            return new ParameterSyntax(SyntaxKind.Parameter, identifier, typeAnnotation);
+        }
+        
+        
+        /// <summary>Creates a new TypeAnnotationSyntax instance.</summary>
+        public static TypeAnnotationSyntax TypeAnnotation(SyntaxToken colonToken, TypeSyntax type)
+        {
+            switch (colonToken.Kind)
+            {
+                case SyntaxKind.ColonToken:
+                    break;
+                default:
+                    throw new ArgumentException("colonToken");
+            }
+            if (type == null)
+                throw new ArgumentNullException(nameof(type));
+            
+            return new TypeAnnotationSyntax(SyntaxKind.TypeAnnotation, colonToken, type);
+        }
+        
+        
+        /// <summary>Creates a new TypeAnnotationSyntax instance.</summary>
+        public static TypeAnnotationSyntax TypeAnnotation(TypeSyntax type)
+        {
+            return SyntaxFactory.TypeAnnotation(SyntaxFactory.Token(SyntaxKind.ColonToken), type);
+        }
+        
+        /// <summary>Creates a new MethodDeclarationSyntax instance.</summary>
+        public static MethodDeclarationSyntax MethodDeclaration(SyntaxToken defKeyword, SimpleNameSyntax name, ParameterListSyntax arguments, TypeAnnotationSyntax returnType, AssignmentSyntax assignment)
+        {
+            switch (defKeyword.Kind)
+            {
+                case SyntaxKind.DefKeyword:
+                    break;
+                default:
+                    throw new ArgumentException("defKeyword");
+            }
+            if (name == null)
+                throw new ArgumentNullException(nameof(name));
+            
+            return new MethodDeclarationSyntax(SyntaxKind.MethodDeclaration, defKeyword, name, arguments, returnType, assignment);
+        }
+        
+        
+        /// <summary>Creates a new MethodDeclarationSyntax instance.</summary>
+        public static MethodDeclarationSyntax MethodDeclaration(SimpleNameSyntax name, ParameterListSyntax arguments, TypeAnnotationSyntax returnType, AssignmentSyntax assignment)
+        {
+            return SyntaxFactory.MethodDeclaration(SyntaxFactory.Token(SyntaxKind.DefKeyword), name, arguments, returnType, assignment);
+        }
+        
+        /// <summary>Creates a new MethodDeclarationSyntax instance.</summary>
+        public static MethodDeclarationSyntax MethodDeclaration(SimpleNameSyntax name)
+        {
+            return SyntaxFactory.MethodDeclaration(SyntaxFactory.Token(SyntaxKind.DefKeyword), name, default(ParameterListSyntax), default(TypeAnnotationSyntax), default(AssignmentSyntax));
+        }
+        
+        /// <summary>Creates a new AssignmentSyntax instance.</summary>
+        public static AssignmentSyntax Assignment(SyntaxToken equalsToken, ExpressionSyntax expression)
+        {
+            switch (equalsToken.Kind)
+            {
+                case SyntaxKind.EqualsToken:
+                    break;
+                default:
+                    throw new ArgumentException("equalsToken");
+            }
+            if (expression == null)
+                throw new ArgumentNullException(nameof(expression));
+            
+            return new AssignmentSyntax(SyntaxKind.Assignment, equalsToken, expression);
+        }
+        
+        
+        /// <summary>Creates a new AssignmentSyntax instance.</summary>
+        public static AssignmentSyntax Assignment(ExpressionSyntax expression)
+        {
+            return SyntaxFactory.Assignment(SyntaxFactory.Token(SyntaxKind.EqualsToken), expression);
+        }
+        
+        /// <summary>Creates a new BlockSyntax instance.</summary>
+        public static BlockSyntax Block(SyntaxToken openBracketToken, SyntaxList<MemberDeclarationSyntax> members, SyntaxToken closeBracketToken)
+        {
+            switch (openBracketToken.Kind)
+            {
+                case SyntaxKind.OpenBracketToken:
+                    break;
+                default:
+                    throw new ArgumentException("openBracketToken");
+            }
+            switch (closeBracketToken.Kind)
+            {
+                case SyntaxKind.CloseBracketToken:
+                    break;
+                default:
+                    throw new ArgumentException("closeBracketToken");
+            }
+            return new BlockSyntax(SyntaxKind.Block, openBracketToken, members.Node, closeBracketToken);
+        }
+        
+        
+        /// <summary>Creates a new BlockSyntax instance.</summary>
+        public static BlockSyntax Block(SyntaxList<MemberDeclarationSyntax> members = default(SyntaxList<MemberDeclarationSyntax>))
+        {
+            return SyntaxFactory.Block(SyntaxFactory.Token(SyntaxKind.OpenBracketToken), members, SyntaxFactory.Token(SyntaxKind.CloseBracketToken));
+        }
     }
-
-    /// <summary>Called when the visitor visits a OpenDirectiveSyntax node.</summary>
-    public virtual TResult VisitOpenDirective(OpenDirectiveSyntax node)
-    {
-      return this.DefaultVisit(node);
-    }
-
-    /// <summary>Called when the visitor visits a TraitDeclarationSyntax node.</summary>
-    public virtual TResult VisitTraitDeclaration(TraitDeclarationSyntax node)
-    {
-      return this.DefaultVisit(node);
-    }
-
-    /// <summary>Called when the visitor visits a ObjectDeclarationSyntax node.</summary>
-    public virtual TResult VisitObjectDeclaration(ObjectDeclarationSyntax node)
-    {
-      return this.DefaultVisit(node);
-    }
-
-    /// <summary>Called when the visitor visits a ClassDeclarationSyntax node.</summary>
-    public virtual TResult VisitClassDeclaration(ClassDeclarationSyntax node)
-    {
-      return this.DefaultVisit(node);
-    }
-  }
-
-  public partial class SyntaxVisitor
-  {
-    /// <summary>Called when the visitor visits a IdentifierNameSyntax node.</summary>
-    public virtual void VisitIdentifierName(IdentifierNameSyntax node)
-    {
-      this.DefaultVisit(node);
-    }
-
-    /// <summary>Called when the visitor visits a QualifiedNameSyntax node.</summary>
-    public virtual void VisitQualifiedName(QualifiedNameSyntax node)
-    {
-      this.DefaultVisit(node);
-    }
-
-    /// <summary>Called when the visitor visits a CompilationUnitSyntax node.</summary>
-    public virtual void VisitCompilationUnit(CompilationUnitSyntax node)
-    {
-      this.DefaultVisit(node);
-    }
-
-    /// <summary>Called when the visitor visits a NamespaceDeclarationSyntax node.</summary>
-    public virtual void VisitNamespaceDeclaration(NamespaceDeclarationSyntax node)
-    {
-      this.DefaultVisit(node);
-    }
-
-    /// <summary>Called when the visitor visits a OpenDirectiveSyntax node.</summary>
-    public virtual void VisitOpenDirective(OpenDirectiveSyntax node)
-    {
-      this.DefaultVisit(node);
-    }
-
-    /// <summary>Called when the visitor visits a TraitDeclarationSyntax node.</summary>
-    public virtual void VisitTraitDeclaration(TraitDeclarationSyntax node)
-    {
-      this.DefaultVisit(node);
-    }
-
-    /// <summary>Called when the visitor visits a ObjectDeclarationSyntax node.</summary>
-    public virtual void VisitObjectDeclaration(ObjectDeclarationSyntax node)
-    {
-      this.DefaultVisit(node);
-    }
-
-    /// <summary>Called when the visitor visits a ClassDeclarationSyntax node.</summary>
-    public virtual void VisitClassDeclaration(ClassDeclarationSyntax node)
-    {
-      this.DefaultVisit(node);
-    }
-  }
-
-  public partial class SyntaxRewriter : SyntaxVisitor<SyntaxNode>
-  {
-    public override SyntaxNode VisitIdentifierName(IdentifierNameSyntax node)
-    {
-      var identifier = this.VisitToken(node.Identifier);
-      return node.Update(identifier);
-    }
-
-    public override SyntaxNode VisitQualifiedName(QualifiedNameSyntax node)
-    {
-      var left = (NameSyntax)this.Visit(node.Left);
-      var dotToken = this.VisitToken(node.DotToken);
-      var right = (SimpleNameSyntax)this.Visit(node.Right);
-      return node.Update(left, dotToken, right);
-    }
-
-    public override SyntaxNode VisitCompilationUnit(CompilationUnitSyntax node)
-    {
-      var @namespace = (NamespaceDeclarationSyntax)this.Visit(node.Namespace);
-      var usings = this.VisitList(node.Usings);
-      var members = this.VisitList(node.Members);
-      var endOfFileToken = this.VisitToken(node.EndOfFileToken);
-      return node.Update(@namespace, usings, members, endOfFileToken);
-    }
-
-    public override SyntaxNode VisitNamespaceDeclaration(NamespaceDeclarationSyntax node)
-    {
-      var namespaceKeyword = this.VisitToken(node.NamespaceKeyword);
-      var name = (NameSyntax)this.Visit(node.Name);
-      return node.Update(namespaceKeyword, name);
-    }
-
-    public override SyntaxNode VisitOpenDirective(OpenDirectiveSyntax node)
-    {
-      var openKeyword = this.VisitToken(node.OpenKeyword);
-      var name = (NameSyntax)this.Visit(node.Name);
-      return node.Update(openKeyword, name);
-    }
-
-    public override SyntaxNode VisitTraitDeclaration(TraitDeclarationSyntax node)
-    {
-      var traitKeyword = this.VisitToken(node.TraitKeyword);
-      var name = (SimpleNameSyntax)this.Visit(node.Name);
-      var openBracketToken = this.VisitToken(node.OpenBracketToken);
-      var members = this.VisitList(node.Members);
-      var closeBracketToken = this.VisitToken(node.CloseBracketToken);
-      return node.Update(traitKeyword, name, openBracketToken, members, closeBracketToken);
-    }
-
-    public override SyntaxNode VisitObjectDeclaration(ObjectDeclarationSyntax node)
-    {
-      var objectKeyword = this.VisitToken(node.ObjectKeyword);
-      var name = (SimpleNameSyntax)this.Visit(node.Name);
-      var openBracketToken = this.VisitToken(node.OpenBracketToken);
-      var members = this.VisitList(node.Members);
-      var closeBracketToken = this.VisitToken(node.CloseBracketToken);
-      return node.Update(objectKeyword, name, openBracketToken, members, closeBracketToken);
-    }
-
-    public override SyntaxNode VisitClassDeclaration(ClassDeclarationSyntax node)
-    {
-      var caseKeyword = this.VisitToken(node.CaseKeyword);
-      var classKeyword = this.VisitToken(node.ClassKeyword);
-      var name = (SimpleNameSyntax)this.Visit(node.Name);
-      var openBracketToken = this.VisitToken(node.OpenBracketToken);
-      var members = this.VisitList(node.Members);
-      var closeBracketToken = this.VisitToken(node.CloseBracketToken);
-      return node.Update(caseKeyword, classKeyword, name, openBracketToken, members, closeBracketToken);
-    }
-  }
-
-  public static partial class SyntaxFactory
-  {
-    /// <summary>Creates a new IdentifierNameSyntax instance.</summary>
-    public static IdentifierNameSyntax IdentifierName(SyntaxToken identifier)
-    {
-      switch (identifier.Kind)
-      {
-        case SyntaxKind.IdentifierToken:
-          break;
-        default:
-          throw new ArgumentException("identifier");
-      }
-      return new IdentifierNameSyntax(SyntaxKind.IdentifierName, identifier);
-    }
-
-
-    /// <summary>Creates a new QualifiedNameSyntax instance.</summary>
-    public static QualifiedNameSyntax QualifiedName(NameSyntax left, SyntaxToken dotToken, SimpleNameSyntax right)
-    {
-      if (left == null)
-        throw new ArgumentNullException(nameof(left));
-      switch (dotToken.Kind)
-      {
-        case SyntaxKind.DotToken:
-          break;
-        default:
-          throw new ArgumentException("dotToken");
-      }
-      if (right == null)
-        throw new ArgumentNullException(nameof(right));
-      return new QualifiedNameSyntax(SyntaxKind.QualifiedName, left, dotToken, right);
-    }
-
-
-    /// <summary>Creates a new QualifiedNameSyntax instance.</summary>
-    public static QualifiedNameSyntax QualifiedName(NameSyntax left, SimpleNameSyntax right)
-    {
-      return SyntaxFactory.QualifiedName(left, SyntaxFactory.Token(SyntaxKind.DotToken), right);
-    }
-
-    /// <summary>Creates a new CompilationUnitSyntax instance.</summary>
-    public static CompilationUnitSyntax CompilationUnit(NamespaceDeclarationSyntax @namespace, SyntaxList<OpenDirectiveSyntax> usings, SyntaxList<TopLevelMemberDeclarationSyntax> members, SyntaxToken endOfFileToken)
-    {
-      switch (endOfFileToken.Kind)
-      {
-        case SyntaxKind.EndOfFileToken:
-          break;
-        default:
-          throw new ArgumentException("endOfFileToken");
-      }
-      return new CompilationUnitSyntax(SyntaxKind.CompilationUnit, @namespace, usings.Node, members.Node, endOfFileToken);
-    }
-
-
-    /// <summary>Creates a new CompilationUnitSyntax instance.</summary>
-    public static CompilationUnitSyntax CompilationUnit(NamespaceDeclarationSyntax @namespace, SyntaxList<OpenDirectiveSyntax> usings, SyntaxList<TopLevelMemberDeclarationSyntax> members)
-    {
-      return SyntaxFactory.CompilationUnit(@namespace, usings, members, SyntaxFactory.Token(SyntaxKind.EndOfFileToken));
-    }
-
-    /// <summary>Creates a new CompilationUnitSyntax instance.</summary>
-    public static CompilationUnitSyntax CompilationUnit(NamespaceDeclarationSyntax @namespace = default(NamespaceDeclarationSyntax))
-    {
-      return SyntaxFactory.CompilationUnit(@namespace, default(SyntaxList<OpenDirectiveSyntax>), default(SyntaxList<TopLevelMemberDeclarationSyntax>), SyntaxFactory.Token(SyntaxKind.EndOfFileToken));
-    }
-
-    /// <summary>Creates a new NamespaceDeclarationSyntax instance.</summary>
-    public static NamespaceDeclarationSyntax NamespaceDeclaration(SyntaxToken namespaceKeyword, NameSyntax name)
-    {
-      switch (namespaceKeyword.Kind)
-      {
-        case SyntaxKind.NamespaceKeyword:
-          break;
-        default:
-          throw new ArgumentException("namespaceKeyword");
-      }
-      if (name == null)
-        throw new ArgumentNullException(nameof(name));
-      return new NamespaceDeclarationSyntax(SyntaxKind.NamespaceDeclaration, namespaceKeyword, name);
-    }
-
-
-    /// <summary>Creates a new NamespaceDeclarationSyntax instance.</summary>
-    public static NamespaceDeclarationSyntax NamespaceDeclaration(NameSyntax name)
-    {
-      return SyntaxFactory.NamespaceDeclaration(SyntaxFactory.Token(SyntaxKind.NamespaceKeyword), name);
-    }
-
-    /// <summary>Creates a new OpenDirectiveSyntax instance.</summary>
-    public static OpenDirectiveSyntax OpenDirective(SyntaxToken openKeyword, NameSyntax name)
-    {
-      switch (openKeyword.Kind)
-      {
-        case SyntaxKind.OpenKeyword:
-          break;
-        default:
-          throw new ArgumentException("openKeyword");
-      }
-      if (name == null)
-        throw new ArgumentNullException(nameof(name));
-      return new OpenDirectiveSyntax(SyntaxKind.OpenDirective, openKeyword, name);
-    }
-
-
-    /// <summary>Creates a new OpenDirectiveSyntax instance.</summary>
-    public static OpenDirectiveSyntax OpenDirective(NameSyntax name)
-    {
-      return SyntaxFactory.OpenDirective(SyntaxFactory.Token(SyntaxKind.OpenKeyword), name);
-    }
-
-    /// <summary>Creates a new TraitDeclarationSyntax instance.</summary>
-    public static TraitDeclarationSyntax TraitDeclaration(SyntaxToken traitKeyword, SimpleNameSyntax name, SyntaxToken openBracketToken, SyntaxList<BaseMemberDeclarationSyntax> members, SyntaxToken closeBracketToken)
-    {
-      switch (traitKeyword.Kind)
-      {
-        case SyntaxKind.TraitKeyword:
-          break;
-        default:
-          throw new ArgumentException("traitKeyword");
-      }
-      if (name == null)
-        throw new ArgumentNullException(nameof(name));
-      switch (openBracketToken.Kind)
-      {
-        case SyntaxKind.OpenBracketToken:
-          break;
-        default:
-          throw new ArgumentException("openBracketToken");
-      }
-      switch (closeBracketToken.Kind)
-      {
-        case SyntaxKind.CloseBracketToken:
-          break;
-        default:
-          throw new ArgumentException("closeBracketToken");
-      }
-      return new TraitDeclarationSyntax(SyntaxKind.TraitDeclaration, traitKeyword, name, openBracketToken, members.Node, closeBracketToken);
-    }
-
-
-    /// <summary>Creates a new TraitDeclarationSyntax instance.</summary>
-    public static TraitDeclarationSyntax TraitDeclaration(SimpleNameSyntax name, SyntaxList<BaseMemberDeclarationSyntax> members)
-    {
-      return SyntaxFactory.TraitDeclaration(SyntaxFactory.Token(SyntaxKind.TraitKeyword), name, SyntaxFactory.Token(SyntaxKind.OpenBracketToken), members, SyntaxFactory.Token(SyntaxKind.CloseBracketToken));
-    }
-
-    /// <summary>Creates a new TraitDeclarationSyntax instance.</summary>
-    public static TraitDeclarationSyntax TraitDeclaration(SimpleNameSyntax name)
-    {
-      return SyntaxFactory.TraitDeclaration(SyntaxFactory.Token(SyntaxKind.TraitKeyword), name, SyntaxFactory.Token(SyntaxKind.OpenBracketToken), default(SyntaxList<BaseMemberDeclarationSyntax>), SyntaxFactory.Token(SyntaxKind.CloseBracketToken));
-    }
-
-    /// <summary>Creates a new ObjectDeclarationSyntax instance.</summary>
-    public static ObjectDeclarationSyntax ObjectDeclaration(SyntaxToken objectKeyword, SimpleNameSyntax name, SyntaxToken openBracketToken, SyntaxList<BaseMemberDeclarationSyntax> members, SyntaxToken closeBracketToken)
-    {
-      switch (objectKeyword.Kind)
-      {
-        case SyntaxKind.ObjectKeyword:
-          break;
-        default:
-          throw new ArgumentException("objectKeyword");
-      }
-      if (name == null)
-        throw new ArgumentNullException(nameof(name));
-      switch (openBracketToken.Kind)
-      {
-        case SyntaxKind.OpenBracketToken:
-          break;
-        default:
-          throw new ArgumentException("openBracketToken");
-      }
-      switch (closeBracketToken.Kind)
-      {
-        case SyntaxKind.CloseBracketToken:
-          break;
-        default:
-          throw new ArgumentException("closeBracketToken");
-      }
-      return new ObjectDeclarationSyntax(SyntaxKind.ObjectDeclaration, objectKeyword, name, openBracketToken, members.Node, closeBracketToken);
-    }
-
-
-    /// <summary>Creates a new ObjectDeclarationSyntax instance.</summary>
-    public static ObjectDeclarationSyntax ObjectDeclaration(SimpleNameSyntax name, SyntaxList<BaseMemberDeclarationSyntax> members)
-    {
-      return SyntaxFactory.ObjectDeclaration(SyntaxFactory.Token(SyntaxKind.ObjectKeyword), name, SyntaxFactory.Token(SyntaxKind.OpenBracketToken), members, SyntaxFactory.Token(SyntaxKind.CloseBracketToken));
-    }
-
-    /// <summary>Creates a new ObjectDeclarationSyntax instance.</summary>
-    public static ObjectDeclarationSyntax ObjectDeclaration(SimpleNameSyntax name)
-    {
-      return SyntaxFactory.ObjectDeclaration(SyntaxFactory.Token(SyntaxKind.ObjectKeyword), name, SyntaxFactory.Token(SyntaxKind.OpenBracketToken), default(SyntaxList<BaseMemberDeclarationSyntax>), SyntaxFactory.Token(SyntaxKind.CloseBracketToken));
-    }
-
-    /// <summary>Creates a new ClassDeclarationSyntax instance.</summary>
-    public static ClassDeclarationSyntax ClassDeclaration(SyntaxToken caseKeyword, SyntaxToken classKeyword, SimpleNameSyntax name, SyntaxToken openBracketToken, SyntaxList<BaseMemberDeclarationSyntax> members, SyntaxToken closeBracketToken)
-    {
-      switch (caseKeyword.Kind)
-      {
-        case SyntaxKind.CaseKeyword:
-        case SyntaxKind.None:
-          break;
-        default:
-          throw new ArgumentException("caseKeyword");
-      }
-      switch (classKeyword.Kind)
-      {
-        case SyntaxKind.ClassKeyword:
-          break;
-        default:
-          throw new ArgumentException("classKeyword");
-      }
-      if (name == null)
-        throw new ArgumentNullException(nameof(name));
-      switch (openBracketToken.Kind)
-      {
-        case SyntaxKind.OpenBracketToken:
-          break;
-        default:
-          throw new ArgumentException("openBracketToken");
-      }
-      switch (closeBracketToken.Kind)
-      {
-        case SyntaxKind.CloseBracketToken:
-          break;
-        default:
-          throw new ArgumentException("closeBracketToken");
-      }
-      return new ClassDeclarationSyntax(SyntaxKind.ClassDeclaration, caseKeyword, classKeyword, name, openBracketToken, members.Node, closeBracketToken);
-    }
-
-
-    /// <summary>Creates a new ClassDeclarationSyntax instance.</summary>
-    public static ClassDeclarationSyntax ClassDeclaration(SimpleNameSyntax name, SyntaxList<BaseMemberDeclarationSyntax> members)
-    {
-      return SyntaxFactory.ClassDeclaration(default(SyntaxToken), SyntaxFactory.Token(SyntaxKind.ClassKeyword), name, SyntaxFactory.Token(SyntaxKind.OpenBracketToken), members, SyntaxFactory.Token(SyntaxKind.CloseBracketToken));
-    }
-
-    /// <summary>Creates a new ClassDeclarationSyntax instance.</summary>
-    public static ClassDeclarationSyntax ClassDeclaration(SimpleNameSyntax name)
-    {
-      return SyntaxFactory.ClassDeclaration(default(SyntaxToken), SyntaxFactory.Token(SyntaxKind.ClassKeyword), name, SyntaxFactory.Token(SyntaxKind.OpenBracketToken), default(SyntaxList<BaseMemberDeclarationSyntax>), SyntaxFactory.Token(SyntaxKind.CloseBracketToken));
-    }
-  }
 }

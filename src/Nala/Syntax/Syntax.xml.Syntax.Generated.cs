@@ -9,818 +9,1673 @@ using System.Threading;
 
 namespace Nala.Syntax
 {
-  /// <summary>Provides the base class from which the classes that represent name syntax nodes are derived. This is an abstract class.</summary>
-  public abstract partial class NameSyntax : TypeSyntax
-  {
-    internal NameSyntax(SyntaxKind kind)
-      : base(kind)
+    
+    
+    /// <summary>Provides the base class from which the classes that represent name syntax nodes are derived. This is an abstract class.</summary>
+    public abstract partial class NameSyntax : TypeSyntax
     {
-    }
-  }
-
-  /// <summary>Provides the base class from which the classes that represent simple name syntax nodes are derived. This is an abstract class.</summary>
-  public abstract partial class SimpleNameSyntax : NameSyntax
-  {
-    internal SimpleNameSyntax(SyntaxKind kind)
-      : base(kind)
-    {
-    }
-
-    /// <summary>SyntaxToken representing the identifier of the simple name.</summary>
-    public abstract SyntaxToken Identifier { get; }
-  }
-
-  /// <summary>Class which represents the syntax node for identifier name.</summary>
-  public sealed partial class IdentifierNameSyntax : SimpleNameSyntax
-  {
-    private readonly SyntaxToken identifier;
-
-    internal IdentifierNameSyntax(SyntaxKind kind, SyntaxToken identifier)
-        : base(kind)
-    {
-        this.SlotCount = 1;
-        this.identifier = identifier;
-    }
-
-    /// <summary>SyntaxToken representing the keyword for the kind of the identifier name.</summary>
-    public override SyntaxToken Identifier 
-    {
-      get { return this.identifier; }
-    }
-
-    internal override SyntaxNode GetSlot(int index)
-    {
-        switch (index)
+        internal NameSyntax(SyntaxKind kind)
+            : base(kind)
         {
-            default: return null;
         }
     }
-
-    public override TResult Accept<TResult>(SyntaxVisitor<TResult> visitor)
+    
+    /// <summary>Provides the base class from which the classes that represent simple name syntax nodes are derived. This is an abstract class.</summary>
+    public abstract partial class SimpleNameSyntax : NameSyntax
     {
-        return visitor.VisitIdentifierName(this);
-    }
-
-    public override void Accept(SyntaxVisitor visitor)
-    {
-        visitor.VisitIdentifierName(this);
-    }
-
-    public IdentifierNameSyntax Update(SyntaxToken identifier)
-    {
-        if (identifier != this.Identifier)
+        internal SimpleNameSyntax(SyntaxKind kind)
+            : base(kind)
         {
-            return SyntaxFactory.IdentifierName(identifier);
         }
-
-        return this;
+        
+        /// <summary>SyntaxToken representing the identifier of the simple name.</summary>
+        public abstract SyntaxToken Identifier { get; }
     }
-
-    public IdentifierNameSyntax WithIdentifier(SyntaxToken identifier)
+    
+    /// <summary>Class which represents the syntax node for identifier name.</summary>
+    public sealed partial class IdentifierNameSyntax : SimpleNameSyntax
     {
-        return this.Update(identifier);
-    }
-  }
-
-  /// <summary>Class which represents the syntax node for qualified name.</summary>
-  public sealed partial class QualifiedNameSyntax : NameSyntax
-  {
-    private readonly NameSyntax left;
-    private readonly SyntaxToken dotToken;
-    private readonly SimpleNameSyntax right;
-
-    internal QualifiedNameSyntax(SyntaxKind kind, NameSyntax left, SyntaxToken dotToken, SimpleNameSyntax right)
-        : base(kind)
-    {
-        this.SlotCount = 3;
-        this.left = left;
-        this.dotToken = dotToken;
-        this.right = right;
-    }
-
-    /// <summary>NameSyntax node representing the name on the left side of the dot token of the qualified name.</summary>
-    public NameSyntax Left 
-    {
-        get
+        private readonly SyntaxToken identifier;
+        
+        internal IdentifierNameSyntax(SyntaxKind kind, SyntaxToken identifier)
+            : base(kind)
         {
-            return this.left;
+            this.SlotCount = 1;
+            this.identifier = identifier;
         }
-    }
-
-    /// <summary>SyntaxToken representing the dot.</summary>
-    public SyntaxToken DotToken 
-    {
-      get { return this.dotToken; }
-    }
-
-    /// <summary>SimpleNameSyntax node representing the name on the right side of the dot token of the qualified name.</summary>
-    public SimpleNameSyntax Right 
-    {
-        get
+        
+        /// <summary>SyntaxToken representing the keyword for the kind of the identifier name.</summary>
+        public override SyntaxToken Identifier 
         {
-            return this.right;
+            get { return this.identifier; }
         }
-    }
-
-    internal override SyntaxNode GetSlot(int index)
-    {
-        switch (index)
+        
+        internal override SyntaxNode GetSlot(int index)
         {
-            case 0: return this.left;
-            case 2: return this.right;
-            default: return null;
+            switch (index)
+            {
+                default: return null;
+            }
         }
-    }
-
-    public override TResult Accept<TResult>(SyntaxVisitor<TResult> visitor)
-    {
-        return visitor.VisitQualifiedName(this);
-    }
-
-    public override void Accept(SyntaxVisitor visitor)
-    {
-        visitor.VisitQualifiedName(this);
-    }
-
-    public QualifiedNameSyntax Update(NameSyntax left, SyntaxToken dotToken, SimpleNameSyntax right)
-    {
-        if (left != this.Left || dotToken != this.DotToken || right != this.Right)
+        
+        public override TResult Accept<TResult>(SyntaxVisitor<TResult> visitor)
         {
-            return SyntaxFactory.QualifiedName(left, dotToken, right);
+            return visitor.VisitIdentifierName(this);
         }
-
-        return this;
-    }
-
-    public QualifiedNameSyntax WithLeft(NameSyntax left)
-    {
-        return this.Update(left, this.DotToken, this.Right);
-    }
-
-    public QualifiedNameSyntax WithDotToken(SyntaxToken dotToken)
-    {
-        return this.Update(this.Left, dotToken, this.Right);
-    }
-
-    public QualifiedNameSyntax WithRight(SimpleNameSyntax right)
-    {
-        return this.Update(this.Left, this.DotToken, right);
-    }
-  }
-
-  /// <summary>Provides the base class from which the classes that represent type syntax nodes are derived. This is an abstract class.</summary>
-  public abstract partial class TypeSyntax : ExpressionSyntax
-  {
-    internal TypeSyntax(SyntaxKind kind)
-      : base(kind)
-    {
-    }
-  }
-
-  /// <summary>Provides the base class from which the classes that represent expression syntax nodes are derived. This is an abstract class.</summary>
-  public abstract partial class ExpressionSyntax : SyntaxNode
-  {
-    internal ExpressionSyntax(SyntaxKind kind)
-      : base(kind)
-    {
-    }
-  }
-
-  public sealed partial class CompilationUnitSyntax : SyntaxNode
-  {
-    private readonly NamespaceDeclarationSyntax @namespace;
-    private readonly SyntaxNode usings;
-    private readonly SyntaxNode members;
-    private readonly SyntaxToken endOfFileToken;
-
-    internal CompilationUnitSyntax(SyntaxKind kind, NamespaceDeclarationSyntax @namespace, SyntaxNode usings, SyntaxNode members, SyntaxToken endOfFileToken)
-        : base(kind)
-    {
-        this.SlotCount = 4;
-        this.@namespace = @namespace;
-        this.usings = usings;
-        this.members = members;
-        this.endOfFileToken = endOfFileToken;
-    }
-
-    public NamespaceDeclarationSyntax Namespace 
-    {
-        get
+        
+        public override void Accept(SyntaxVisitor visitor)
         {
-            return this.@namespace;
+            visitor.VisitIdentifierName(this);
+        }
+        
+        public IdentifierNameSyntax Update(SyntaxToken identifier)
+        {
+            if (identifier != this.Identifier)
+            {
+                return SyntaxFactory.IdentifierName(identifier);
+            }
+            
+            return this;
+        }
+        
+        public IdentifierNameSyntax WithIdentifier(SyntaxToken identifier)
+        {
+            return this.Update(identifier);
+        }
+        
+        private bool Equals(IdentifierNameSyntax other)
+        {
+            return Equals(identifier, other.identifier);
+        }
+        
+        public override bool Equals(object obj)
+        {
+            if (ReferenceEquals(null, obj)) return false;
+            if (ReferenceEquals(this, obj)) return true;
+            return obj is IdentifierNameSyntax && Equals((IdentifierNameSyntax)obj);
+        }
+        public override int GetHashCode()
+        {
+            unchecked
+            {
+                var hashCode = identifier.GetHashCode();
+                return hashCode;
+            }
         }
     }
-
-    public SyntaxList<OpenDirectiveSyntax> Usings 
+    
+    /// <summary>Class which represents the syntax node for qualified name.</summary>
+    public sealed partial class QualifiedNameSyntax : NameSyntax
     {
-        get
+        private readonly NameSyntax left;
+        private readonly SyntaxToken dotToken;
+        private readonly SimpleNameSyntax right;
+        
+        internal QualifiedNameSyntax(SyntaxKind kind, NameSyntax left, SyntaxToken dotToken, SimpleNameSyntax right)
+            : base(kind)
         {
-            return new SyntaxList<OpenDirectiveSyntax>(this.usings);
+            this.SlotCount = 3;
+            this.left = left;
+            this.dotToken = dotToken;
+            this.right = right;
+        }
+        
+        /// <summary>NameSyntax node representing the name on the left side of the dot token of the qualified name.</summary>
+        public NameSyntax Left 
+        {
+            get
+            {
+                return this.left;
+            }
+        }
+        
+        /// <summary>SyntaxToken representing the dot.</summary>
+        public SyntaxToken DotToken 
+        {
+            get { return this.dotToken; }
+        }
+        
+        /// <summary>SimpleNameSyntax node representing the name on the right side of the dot token of the qualified name.</summary>
+        public SimpleNameSyntax Right 
+        {
+            get
+            {
+                return this.right;
+            }
+        }
+        
+        internal override SyntaxNode GetSlot(int index)
+        {
+            switch (index)
+            {
+                case 0: return this.left;
+                case 2: return this.right;
+                default: return null;
+            }
+        }
+        
+        public override TResult Accept<TResult>(SyntaxVisitor<TResult> visitor)
+        {
+            return visitor.VisitQualifiedName(this);
+        }
+        
+        public override void Accept(SyntaxVisitor visitor)
+        {
+            visitor.VisitQualifiedName(this);
+        }
+        
+        public QualifiedNameSyntax Update(NameSyntax left, SyntaxToken dotToken, SimpleNameSyntax right)
+        {
+            if (left != this.Left || dotToken != this.DotToken || right != this.Right)
+            {
+                return SyntaxFactory.QualifiedName(left, dotToken, right);
+            }
+            
+            return this;
+        }
+        
+        public QualifiedNameSyntax WithLeft(NameSyntax left)
+        {
+            return this.Update(left, this.DotToken, this.Right);
+        }
+        
+        public QualifiedNameSyntax WithDotToken(SyntaxToken dotToken)
+        {
+            return this.Update(this.Left, dotToken, this.Right);
+        }
+        
+        public QualifiedNameSyntax WithRight(SimpleNameSyntax right)
+        {
+            return this.Update(this.Left, this.DotToken, right);
+        }
+        
+        private bool Equals(QualifiedNameSyntax other)
+        {
+            return Equals(left, other.left) &&
+                   Equals(dotToken, other.dotToken) &&
+                   Equals(right, other.right);
+        }
+        
+        public override bool Equals(object obj)
+        {
+            if (ReferenceEquals(null, obj)) return false;
+            if (ReferenceEquals(this, obj)) return true;
+            return obj is QualifiedNameSyntax && Equals((QualifiedNameSyntax)obj);
+        }
+        public override int GetHashCode()
+        {
+            unchecked
+            {
+                var hashCode = left.GetHashCode();
+                hashCode = (hashCode * 397) ^ dotToken.GetHashCode();
+                hashCode = (hashCode * 397) ^ right.GetHashCode();
+                return hashCode;
+            }
         }
     }
-
-    public SyntaxList<TopLevelMemberDeclarationSyntax> Members 
+    
+    /// <summary>Provides the base class from which the classes that represent type syntax nodes are derived. This is an abstract class.</summary>
+    public abstract partial class TypeSyntax : ExpressionSyntax
     {
-        get
+        internal TypeSyntax(SyntaxKind kind)
+            : base(kind)
         {
-            return new SyntaxList<TopLevelMemberDeclarationSyntax>(this.members);
         }
     }
-
-    public SyntaxToken EndOfFileToken 
+    
+    /// <summary>Provides the base class from which the classes that represent expression syntax nodes are derived. This is an abstract class.</summary>
+    public abstract partial class ExpressionSyntax : MemberDeclarationSyntax
     {
-      get { return this.endOfFileToken; }
-    }
-
-    internal override SyntaxNode GetSlot(int index)
-    {
-        switch (index)
+        internal ExpressionSyntax(SyntaxKind kind)
+            : base(kind)
         {
-            case 0: return this.@namespace;
-            case 1: return this.usings;
-            case 2: return this.members;
-            default: return null;
         }
     }
-
-    public override TResult Accept<TResult>(SyntaxVisitor<TResult> visitor)
+    
+    public sealed partial class CompilationUnitSyntax : SyntaxNode
     {
-        return visitor.VisitCompilationUnit(this);
-    }
-
-    public override void Accept(SyntaxVisitor visitor)
-    {
-        visitor.VisitCompilationUnit(this);
-    }
-
-    public CompilationUnitSyntax Update(NamespaceDeclarationSyntax @namespace, SyntaxList<OpenDirectiveSyntax> usings, SyntaxList<TopLevelMemberDeclarationSyntax> members, SyntaxToken endOfFileToken)
-    {
-        if (@namespace != this.Namespace || usings != this.Usings || members != this.Members || endOfFileToken != this.EndOfFileToken)
+        private readonly NamespaceDeclarationSyntax @namespace;
+        private readonly SyntaxNode usings;
+        private readonly SyntaxNode members;
+        private readonly SyntaxToken endOfFileToken;
+        
+        internal CompilationUnitSyntax(SyntaxKind kind, NamespaceDeclarationSyntax @namespace, SyntaxNode usings, SyntaxNode members, SyntaxToken endOfFileToken)
+            : base(kind)
         {
-            return SyntaxFactory.CompilationUnit(@namespace, usings, members, endOfFileToken);
+            this.SlotCount = 4;
+            this.@namespace = @namespace;
+            this.usings = usings;
+            this.members = members;
+            this.endOfFileToken = endOfFileToken;
         }
-
-        return this;
-    }
-
-    public CompilationUnitSyntax WithNamespace(NamespaceDeclarationSyntax @namespace)
-    {
-        return this.Update(@namespace, this.Usings, this.Members, this.EndOfFileToken);
-    }
-
-    public CompilationUnitSyntax WithUsings(SyntaxList<OpenDirectiveSyntax> usings)
-    {
-        return this.Update(this.Namespace, usings, this.Members, this.EndOfFileToken);
-    }
-
-    public CompilationUnitSyntax WithMembers(SyntaxList<TopLevelMemberDeclarationSyntax> members)
-    {
-        return this.Update(this.Namespace, this.Usings, members, this.EndOfFileToken);
-    }
-
-    public CompilationUnitSyntax WithEndOfFileToken(SyntaxToken endOfFileToken)
-    {
-        return this.Update(this.Namespace, this.Usings, this.Members, endOfFileToken);
-    }
-
-    public CompilationUnitSyntax AddUsings(params OpenDirectiveSyntax[] items)
-    {
-        return this.WithUsings(this.Usings.AddRange(items));
-    }
-
-    public CompilationUnitSyntax AddMembers(params TopLevelMemberDeclarationSyntax[] items)
-    {
-        return this.WithMembers(this.Members.AddRange(items));
-    }
-  }
-
-  public sealed partial class NamespaceDeclarationSyntax : SyntaxNode
-  {
-    private readonly SyntaxToken namespaceKeyword;
-    private readonly NameSyntax name;
-
-    internal NamespaceDeclarationSyntax(SyntaxKind kind, SyntaxToken namespaceKeyword, NameSyntax name)
-        : base(kind)
-    {
-        this.SlotCount = 2;
-        this.namespaceKeyword = namespaceKeyword;
-        this.name = name;
-    }
-
-    public SyntaxToken NamespaceKeyword 
-    {
-      get { return this.namespaceKeyword; }
-    }
-
-    public NameSyntax Name 
-    {
-        get
+        
+        public NamespaceDeclarationSyntax Namespace 
         {
-            return this.name;
+            get
+            {
+                return this.@namespace;
+            }
         }
-    }
-
-    internal override SyntaxNode GetSlot(int index)
-    {
-        switch (index)
+        
+        public SyntaxList<OpenDirectiveSyntax> Usings 
         {
-            case 1: return this.name;
-            default: return null;
+            get
+            {
+                return new SyntaxList<OpenDirectiveSyntax>(this.usings);
+            }
         }
-    }
-
-    public override TResult Accept<TResult>(SyntaxVisitor<TResult> visitor)
-    {
-        return visitor.VisitNamespaceDeclaration(this);
-    }
-
-    public override void Accept(SyntaxVisitor visitor)
-    {
-        visitor.VisitNamespaceDeclaration(this);
-    }
-
-    public NamespaceDeclarationSyntax Update(SyntaxToken namespaceKeyword, NameSyntax name)
-    {
-        if (namespaceKeyword != this.NamespaceKeyword || name != this.Name)
+        
+        public SyntaxList<TypeDeclarationSyntax> Members 
         {
-            return SyntaxFactory.NamespaceDeclaration(namespaceKeyword, name);
+            get
+            {
+                return new SyntaxList<TypeDeclarationSyntax>(this.members);
+            }
         }
-
-        return this;
-    }
-
-    public NamespaceDeclarationSyntax WithNamespaceKeyword(SyntaxToken namespaceKeyword)
-    {
-        return this.Update(namespaceKeyword, this.Name);
-    }
-
-    public NamespaceDeclarationSyntax WithName(NameSyntax name)
-    {
-        return this.Update(this.NamespaceKeyword, name);
-    }
-  }
-
-  public sealed partial class OpenDirectiveSyntax : SyntaxNode
-  {
-    private readonly SyntaxToken openKeyword;
-    private readonly NameSyntax name;
-
-    internal OpenDirectiveSyntax(SyntaxKind kind, SyntaxToken openKeyword, NameSyntax name)
-        : base(kind)
-    {
-        this.SlotCount = 2;
-        this.openKeyword = openKeyword;
-        this.name = name;
-    }
-
-    public SyntaxToken OpenKeyword 
-    {
-      get { return this.openKeyword; }
-    }
-
-    public NameSyntax Name 
-    {
-        get
+        
+        public SyntaxToken EndOfFileToken 
         {
-            return this.name;
+            get { return this.endOfFileToken; }
+        }
+        
+        internal override SyntaxNode GetSlot(int index)
+        {
+            switch (index)
+            {
+                case 0: return this.@namespace;
+                case 1: return this.usings;
+                case 2: return this.members;
+                default: return null;
+            }
+        }
+        
+        public override TResult Accept<TResult>(SyntaxVisitor<TResult> visitor)
+        {
+            return visitor.VisitCompilationUnit(this);
+        }
+        
+        public override void Accept(SyntaxVisitor visitor)
+        {
+            visitor.VisitCompilationUnit(this);
+        }
+        
+        public CompilationUnitSyntax Update(NamespaceDeclarationSyntax @namespace, SyntaxList<OpenDirectiveSyntax> usings, SyntaxList<TypeDeclarationSyntax> members, SyntaxToken endOfFileToken)
+        {
+            if (@namespace != this.Namespace || usings != this.Usings || members != this.Members || endOfFileToken != this.EndOfFileToken)
+            {
+                return SyntaxFactory.CompilationUnit(@namespace, usings, members, endOfFileToken);
+            }
+            
+            return this;
+        }
+        
+        public CompilationUnitSyntax WithNamespace(NamespaceDeclarationSyntax @namespace)
+        {
+            return this.Update(@namespace, this.Usings, this.Members, this.EndOfFileToken);
+        }
+        
+        public CompilationUnitSyntax WithUsings(SyntaxList<OpenDirectiveSyntax> usings)
+        {
+            return this.Update(this.Namespace, usings, this.Members, this.EndOfFileToken);
+        }
+        
+        public CompilationUnitSyntax WithMembers(SyntaxList<TypeDeclarationSyntax> members)
+        {
+            return this.Update(this.Namespace, this.Usings, members, this.EndOfFileToken);
+        }
+        
+        public CompilationUnitSyntax WithEndOfFileToken(SyntaxToken endOfFileToken)
+        {
+            return this.Update(this.Namespace, this.Usings, this.Members, endOfFileToken);
+        }
+        
+        public CompilationUnitSyntax AddUsings(params OpenDirectiveSyntax[] items)
+        {
+            return this.WithUsings(this.Usings.AddRange(items));
+        }
+        
+        public CompilationUnitSyntax AddMembers(params TypeDeclarationSyntax[] items)
+        {
+            return this.WithMembers(this.Members.AddRange(items));
+        }
+        
+        private bool Equals(CompilationUnitSyntax other)
+        {
+            return Equals(@namespace, other.@namespace) &&
+                   Equals(usings, other.usings) &&
+                   Equals(members, other.members) &&
+                   Equals(endOfFileToken, other.endOfFileToken);
+        }
+        
+        public override bool Equals(object obj)
+        {
+            if (ReferenceEquals(null, obj)) return false;
+            if (ReferenceEquals(this, obj)) return true;
+            return obj is CompilationUnitSyntax && Equals((CompilationUnitSyntax)obj);
+        }
+        public override int GetHashCode()
+        {
+            unchecked
+            {
+                var hashCode = (@namespace != null ? @namespace.GetHashCode() : 0);
+                hashCode = (hashCode * 397) ^ usings.GetHashCode();
+                hashCode = (hashCode * 397) ^ members.GetHashCode();
+                hashCode = (hashCode * 397) ^ endOfFileToken.GetHashCode();
+                return hashCode;
+            }
         }
     }
-
-    internal override SyntaxNode GetSlot(int index)
+    
+    public sealed partial class NamespaceDeclarationSyntax : SyntaxNode
     {
-        switch (index)
+        private readonly SyntaxToken namespaceKeyword;
+        private readonly NameSyntax name;
+        
+        internal NamespaceDeclarationSyntax(SyntaxKind kind, SyntaxToken namespaceKeyword, NameSyntax name)
+            : base(kind)
         {
-            case 1: return this.name;
-            default: return null;
+            this.SlotCount = 2;
+            this.namespaceKeyword = namespaceKeyword;
+            this.name = name;
+        }
+        
+        public SyntaxToken NamespaceKeyword 
+        {
+            get { return this.namespaceKeyword; }
+        }
+        
+        public NameSyntax Name 
+        {
+            get
+            {
+                return this.name;
+            }
+        }
+        
+        internal override SyntaxNode GetSlot(int index)
+        {
+            switch (index)
+            {
+                case 1: return this.name;
+                default: return null;
+            }
+        }
+        
+        public override TResult Accept<TResult>(SyntaxVisitor<TResult> visitor)
+        {
+            return visitor.VisitNamespaceDeclaration(this);
+        }
+        
+        public override void Accept(SyntaxVisitor visitor)
+        {
+            visitor.VisitNamespaceDeclaration(this);
+        }
+        
+        public NamespaceDeclarationSyntax Update(SyntaxToken namespaceKeyword, NameSyntax name)
+        {
+            if (namespaceKeyword != this.NamespaceKeyword || name != this.Name)
+            {
+                return SyntaxFactory.NamespaceDeclaration(namespaceKeyword, name);
+            }
+            
+            return this;
+        }
+        
+        public NamespaceDeclarationSyntax WithNamespaceKeyword(SyntaxToken namespaceKeyword)
+        {
+            return this.Update(namespaceKeyword, this.Name);
+        }
+        
+        public NamespaceDeclarationSyntax WithName(NameSyntax name)
+        {
+            return this.Update(this.NamespaceKeyword, name);
+        }
+        
+        private bool Equals(NamespaceDeclarationSyntax other)
+        {
+            return Equals(namespaceKeyword, other.namespaceKeyword) &&
+                   Equals(name, other.name);
+        }
+        
+        public override bool Equals(object obj)
+        {
+            if (ReferenceEquals(null, obj)) return false;
+            if (ReferenceEquals(this, obj)) return true;
+            return obj is NamespaceDeclarationSyntax && Equals((NamespaceDeclarationSyntax)obj);
+        }
+        public override int GetHashCode()
+        {
+            unchecked
+            {
+                var hashCode = namespaceKeyword.GetHashCode();
+                hashCode = (hashCode * 397) ^ name.GetHashCode();
+                return hashCode;
+            }
         }
     }
-
-    public override TResult Accept<TResult>(SyntaxVisitor<TResult> visitor)
+    
+    public sealed partial class OpenDirectiveSyntax : SyntaxNode
     {
-        return visitor.VisitOpenDirective(this);
-    }
-
-    public override void Accept(SyntaxVisitor visitor)
-    {
-        visitor.VisitOpenDirective(this);
-    }
-
-    public OpenDirectiveSyntax Update(SyntaxToken openKeyword, NameSyntax name)
-    {
-        if (openKeyword != this.OpenKeyword || name != this.Name)
+        private readonly SyntaxToken openKeyword;
+        private readonly NameSyntax name;
+        
+        internal OpenDirectiveSyntax(SyntaxKind kind, SyntaxToken openKeyword, NameSyntax name)
+            : base(kind)
         {
-            return SyntaxFactory.OpenDirective(openKeyword, name);
+            this.SlotCount = 2;
+            this.openKeyword = openKeyword;
+            this.name = name;
         }
-
-        return this;
-    }
-
-    public OpenDirectiveSyntax WithOpenKeyword(SyntaxToken openKeyword)
-    {
-        return this.Update(openKeyword, this.Name);
-    }
-
-    public OpenDirectiveSyntax WithName(NameSyntax name)
-    {
-        return this.Update(this.OpenKeyword, name);
-    }
-  }
-
-  public abstract partial class BaseMemberDeclarationSyntax : SyntaxNode
-  {
-    internal BaseMemberDeclarationSyntax(SyntaxKind kind)
-      : base(kind)
-    {
-    }
-  }
-
-  public abstract partial class MemberDeclarationSyntax : BaseMemberDeclarationSyntax
-  {
-    internal MemberDeclarationSyntax(SyntaxKind kind)
-      : base(kind)
-    {
-    }
-  }
-
-  public abstract partial class TopLevelMemberDeclarationSyntax : BaseMemberDeclarationSyntax
-  {
-    internal TopLevelMemberDeclarationSyntax(SyntaxKind kind)
-      : base(kind)
-    {
-    }
-  }
-
-  public sealed partial class TraitDeclarationSyntax : TopLevelMemberDeclarationSyntax
-  {
-    private readonly SyntaxToken traitKeyword;
-    private readonly SimpleNameSyntax name;
-    private readonly SyntaxToken openBracketToken;
-    private readonly SyntaxNode members;
-    private readonly SyntaxToken closeBracketToken;
-
-    internal TraitDeclarationSyntax(SyntaxKind kind, SyntaxToken traitKeyword, SimpleNameSyntax name, SyntaxToken openBracketToken, SyntaxNode members, SyntaxToken closeBracketToken)
-        : base(kind)
-    {
-        this.SlotCount = 5;
-        this.traitKeyword = traitKeyword;
-        this.name = name;
-        this.openBracketToken = openBracketToken;
-        this.members = members;
-        this.closeBracketToken = closeBracketToken;
-    }
-
-    public SyntaxToken TraitKeyword 
-    {
-      get { return this.traitKeyword; }
-    }
-
-    public SimpleNameSyntax Name 
-    {
-        get
+        
+        public SyntaxToken OpenKeyword 
         {
-            return this.name;
+            get { return this.openKeyword; }
         }
-    }
-
-    /// <summary>SyntaxToken representing open bracket.</summary>
-    public SyntaxToken OpenBracketToken 
-    {
-      get { return this.openBracketToken; }
-    }
-
-    public SyntaxList<BaseMemberDeclarationSyntax> Members 
-    {
-        get
+        
+        public NameSyntax Name 
         {
-            return new SyntaxList<BaseMemberDeclarationSyntax>(this.members);
+            get
+            {
+                return this.name;
+            }
+        }
+        
+        internal override SyntaxNode GetSlot(int index)
+        {
+            switch (index)
+            {
+                case 1: return this.name;
+                default: return null;
+            }
+        }
+        
+        public override TResult Accept<TResult>(SyntaxVisitor<TResult> visitor)
+        {
+            return visitor.VisitOpenDirective(this);
+        }
+        
+        public override void Accept(SyntaxVisitor visitor)
+        {
+            visitor.VisitOpenDirective(this);
+        }
+        
+        public OpenDirectiveSyntax Update(SyntaxToken openKeyword, NameSyntax name)
+        {
+            if (openKeyword != this.OpenKeyword || name != this.Name)
+            {
+                return SyntaxFactory.OpenDirective(openKeyword, name);
+            }
+            
+            return this;
+        }
+        
+        public OpenDirectiveSyntax WithOpenKeyword(SyntaxToken openKeyword)
+        {
+            return this.Update(openKeyword, this.Name);
+        }
+        
+        public OpenDirectiveSyntax WithName(NameSyntax name)
+        {
+            return this.Update(this.OpenKeyword, name);
+        }
+        
+        private bool Equals(OpenDirectiveSyntax other)
+        {
+            return Equals(openKeyword, other.openKeyword) &&
+                   Equals(name, other.name);
+        }
+        
+        public override bool Equals(object obj)
+        {
+            if (ReferenceEquals(null, obj)) return false;
+            if (ReferenceEquals(this, obj)) return true;
+            return obj is OpenDirectiveSyntax && Equals((OpenDirectiveSyntax)obj);
+        }
+        public override int GetHashCode()
+        {
+            unchecked
+            {
+                var hashCode = openKeyword.GetHashCode();
+                hashCode = (hashCode * 397) ^ name.GetHashCode();
+                return hashCode;
+            }
         }
     }
-
-    /// <summary>SyntaxToken representing close bracket.</summary>
-    public SyntaxToken CloseBracketToken 
+    
+    public abstract partial class MemberDeclarationSyntax : SyntaxNode
     {
-      get { return this.closeBracketToken; }
-    }
-
-    internal override SyntaxNode GetSlot(int index)
-    {
-        switch (index)
+        internal MemberDeclarationSyntax(SyntaxKind kind)
+            : base(kind)
         {
-            case 1: return this.name;
-            case 3: return this.members;
-            default: return null;
         }
     }
-
-    public override TResult Accept<TResult>(SyntaxVisitor<TResult> visitor)
+    
+    public abstract partial class TypeDeclarationSyntax : MemberDeclarationSyntax
     {
-        return visitor.VisitTraitDeclaration(this);
-    }
-
-    public override void Accept(SyntaxVisitor visitor)
-    {
-        visitor.VisitTraitDeclaration(this);
-    }
-
-    public TraitDeclarationSyntax Update(SyntaxToken traitKeyword, SimpleNameSyntax name, SyntaxToken openBracketToken, SyntaxList<BaseMemberDeclarationSyntax> members, SyntaxToken closeBracketToken)
-    {
-        if (traitKeyword != this.TraitKeyword || name != this.Name || openBracketToken != this.OpenBracketToken || members != this.Members || closeBracketToken != this.CloseBracketToken)
+        internal TypeDeclarationSyntax(SyntaxKind kind)
+            : base(kind)
         {
-            return SyntaxFactory.TraitDeclaration(traitKeyword, name, openBracketToken, members, closeBracketToken);
-        }
-
-        return this;
-    }
-
-    public TraitDeclarationSyntax WithTraitKeyword(SyntaxToken traitKeyword)
-    {
-        return this.Update(traitKeyword, this.Name, this.OpenBracketToken, this.Members, this.CloseBracketToken);
-    }
-
-    public TraitDeclarationSyntax WithName(SimpleNameSyntax name)
-    {
-        return this.Update(this.TraitKeyword, name, this.OpenBracketToken, this.Members, this.CloseBracketToken);
-    }
-
-    public TraitDeclarationSyntax WithOpenBracketToken(SyntaxToken openBracketToken)
-    {
-        return this.Update(this.TraitKeyword, this.Name, openBracketToken, this.Members, this.CloseBracketToken);
-    }
-
-    public TraitDeclarationSyntax WithMembers(SyntaxList<BaseMemberDeclarationSyntax> members)
-    {
-        return this.Update(this.TraitKeyword, this.Name, this.OpenBracketToken, members, this.CloseBracketToken);
-    }
-
-    public TraitDeclarationSyntax WithCloseBracketToken(SyntaxToken closeBracketToken)
-    {
-        return this.Update(this.TraitKeyword, this.Name, this.OpenBracketToken, this.Members, closeBracketToken);
-    }
-
-    public TraitDeclarationSyntax AddMembers(params BaseMemberDeclarationSyntax[] items)
-    {
-        return this.WithMembers(this.Members.AddRange(items));
-    }
-  }
-
-  public sealed partial class ObjectDeclarationSyntax : TopLevelMemberDeclarationSyntax
-  {
-    private readonly SyntaxToken objectKeyword;
-    private readonly SimpleNameSyntax name;
-    private readonly SyntaxToken openBracketToken;
-    private readonly SyntaxNode members;
-    private readonly SyntaxToken closeBracketToken;
-
-    internal ObjectDeclarationSyntax(SyntaxKind kind, SyntaxToken objectKeyword, SimpleNameSyntax name, SyntaxToken openBracketToken, SyntaxNode members, SyntaxToken closeBracketToken)
-        : base(kind)
-    {
-        this.SlotCount = 5;
-        this.objectKeyword = objectKeyword;
-        this.name = name;
-        this.openBracketToken = openBracketToken;
-        this.members = members;
-        this.closeBracketToken = closeBracketToken;
-    }
-
-    public SyntaxToken ObjectKeyword 
-    {
-      get { return this.objectKeyword; }
-    }
-
-    public SimpleNameSyntax Name 
-    {
-        get
-        {
-            return this.name;
         }
     }
-
-    /// <summary>SyntaxToken representing open bracket.</summary>
-    public SyntaxToken OpenBracketToken 
+    
+    public sealed partial class TraitDeclarationSyntax : TypeDeclarationSyntax
     {
-      get { return this.openBracketToken; }
-    }
-
-    public SyntaxList<BaseMemberDeclarationSyntax> Members 
-    {
-        get
+        private readonly SyntaxToken traitKeyword;
+        private readonly SimpleNameSyntax name;
+        private readonly MemberBodySyntax body;
+        
+        internal TraitDeclarationSyntax(SyntaxKind kind, SyntaxToken traitKeyword, SimpleNameSyntax name, MemberBodySyntax body)
+            : base(kind)
         {
-            return new SyntaxList<BaseMemberDeclarationSyntax>(this.members);
+            this.SlotCount = 3;
+            this.traitKeyword = traitKeyword;
+            this.name = name;
+            this.body = body;
+        }
+        
+        public SyntaxToken TraitKeyword 
+        {
+            get { return this.traitKeyword; }
+        }
+        
+        public SimpleNameSyntax Name 
+        {
+            get
+            {
+                return this.name;
+            }
+        }
+        
+        public MemberBodySyntax Body 
+        {
+            get
+            {
+                return this.body;
+            }
+        }
+        
+        internal override SyntaxNode GetSlot(int index)
+        {
+            switch (index)
+            {
+                case 1: return this.name;
+                case 2: return this.body;
+                default: return null;
+            }
+        }
+        
+        public override TResult Accept<TResult>(SyntaxVisitor<TResult> visitor)
+        {
+            return visitor.VisitTraitDeclaration(this);
+        }
+        
+        public override void Accept(SyntaxVisitor visitor)
+        {
+            visitor.VisitTraitDeclaration(this);
+        }
+        
+        public TraitDeclarationSyntax Update(SyntaxToken traitKeyword, SimpleNameSyntax name, MemberBodySyntax body)
+        {
+            if (traitKeyword != this.TraitKeyword || name != this.Name || body != this.Body)
+            {
+                return SyntaxFactory.TraitDeclaration(traitKeyword, name, body);
+            }
+            
+            return this;
+        }
+        
+        public TraitDeclarationSyntax WithTraitKeyword(SyntaxToken traitKeyword)
+        {
+            return this.Update(traitKeyword, this.Name, this.Body);
+        }
+        
+        public TraitDeclarationSyntax WithName(SimpleNameSyntax name)
+        {
+            return this.Update(this.TraitKeyword, name, this.Body);
+        }
+        
+        public TraitDeclarationSyntax WithBody(MemberBodySyntax body)
+        {
+            return this.Update(this.TraitKeyword, this.Name, body);
+        }
+        
+            public TraitDeclarationSyntax AddBodyMembers(params MemberDeclarationSyntax[] items)
+        {
+                    var body = this.Body ?? SyntaxFactory.MemberBody();
+                    return this.WithBody(body.WithMembers(body.Members.AddRange(items)));
+        }
+        
+        private bool Equals(TraitDeclarationSyntax other)
+        {
+            return Equals(traitKeyword, other.traitKeyword) &&
+                   Equals(name, other.name) &&
+                   Equals(body, other.body);
+        }
+        
+        public override bool Equals(object obj)
+        {
+            if (ReferenceEquals(null, obj)) return false;
+            if (ReferenceEquals(this, obj)) return true;
+            return obj is TraitDeclarationSyntax && Equals((TraitDeclarationSyntax)obj);
+        }
+        public override int GetHashCode()
+        {
+            unchecked
+            {
+                var hashCode = traitKeyword.GetHashCode();
+                hashCode = (hashCode * 397) ^ name.GetHashCode();
+                hashCode = (hashCode * 397) ^ (body != null ? body.GetHashCode() : 0);
+                return hashCode;
+            }
         }
     }
-
-    /// <summary>SyntaxToken representing close bracket.</summary>
-    public SyntaxToken CloseBracketToken 
+    
+    public sealed partial class ObjectDeclarationSyntax : TypeDeclarationSyntax
     {
-      get { return this.closeBracketToken; }
-    }
-
-    internal override SyntaxNode GetSlot(int index)
-    {
-        switch (index)
+        private readonly SyntaxToken objectKeyword;
+        private readonly SimpleNameSyntax name;
+        private readonly MemberBodySyntax body;
+        
+        internal ObjectDeclarationSyntax(SyntaxKind kind, SyntaxToken objectKeyword, SimpleNameSyntax name, MemberBodySyntax body)
+            : base(kind)
         {
-            case 1: return this.name;
-            case 3: return this.members;
-            default: return null;
+            this.SlotCount = 3;
+            this.objectKeyword = objectKeyword;
+            this.name = name;
+            this.body = body;
+        }
+        
+        public SyntaxToken ObjectKeyword 
+        {
+            get { return this.objectKeyword; }
+        }
+        
+        public SimpleNameSyntax Name 
+        {
+            get
+            {
+                return this.name;
+            }
+        }
+        
+        public MemberBodySyntax Body 
+        {
+            get
+            {
+                return this.body;
+            }
+        }
+        
+        internal override SyntaxNode GetSlot(int index)
+        {
+            switch (index)
+            {
+                case 1: return this.name;
+                case 2: return this.body;
+                default: return null;
+            }
+        }
+        
+        public override TResult Accept<TResult>(SyntaxVisitor<TResult> visitor)
+        {
+            return visitor.VisitObjectDeclaration(this);
+        }
+        
+        public override void Accept(SyntaxVisitor visitor)
+        {
+            visitor.VisitObjectDeclaration(this);
+        }
+        
+        public ObjectDeclarationSyntax Update(SyntaxToken objectKeyword, SimpleNameSyntax name, MemberBodySyntax body)
+        {
+            if (objectKeyword != this.ObjectKeyword || name != this.Name || body != this.Body)
+            {
+                return SyntaxFactory.ObjectDeclaration(objectKeyword, name, body);
+            }
+            
+            return this;
+        }
+        
+        public ObjectDeclarationSyntax WithObjectKeyword(SyntaxToken objectKeyword)
+        {
+            return this.Update(objectKeyword, this.Name, this.Body);
+        }
+        
+        public ObjectDeclarationSyntax WithName(SimpleNameSyntax name)
+        {
+            return this.Update(this.ObjectKeyword, name, this.Body);
+        }
+        
+        public ObjectDeclarationSyntax WithBody(MemberBodySyntax body)
+        {
+            return this.Update(this.ObjectKeyword, this.Name, body);
+        }
+        
+            public ObjectDeclarationSyntax AddBodyMembers(params MemberDeclarationSyntax[] items)
+        {
+                    var body = this.Body ?? SyntaxFactory.MemberBody();
+                    return this.WithBody(body.WithMembers(body.Members.AddRange(items)));
+        }
+        
+        private bool Equals(ObjectDeclarationSyntax other)
+        {
+            return Equals(objectKeyword, other.objectKeyword) &&
+                   Equals(name, other.name) &&
+                   Equals(body, other.body);
+        }
+        
+        public override bool Equals(object obj)
+        {
+            if (ReferenceEquals(null, obj)) return false;
+            if (ReferenceEquals(this, obj)) return true;
+            return obj is ObjectDeclarationSyntax && Equals((ObjectDeclarationSyntax)obj);
+        }
+        public override int GetHashCode()
+        {
+            unchecked
+            {
+                var hashCode = objectKeyword.GetHashCode();
+                hashCode = (hashCode * 397) ^ name.GetHashCode();
+                hashCode = (hashCode * 397) ^ (body != null ? body.GetHashCode() : 0);
+                return hashCode;
+            }
         }
     }
-
-    public override TResult Accept<TResult>(SyntaxVisitor<TResult> visitor)
+    
+    public sealed partial class ClassDeclarationSyntax : TypeDeclarationSyntax
     {
-        return visitor.VisitObjectDeclaration(this);
-    }
-
-    public override void Accept(SyntaxVisitor visitor)
-    {
-        visitor.VisitObjectDeclaration(this);
-    }
-
-    public ObjectDeclarationSyntax Update(SyntaxToken objectKeyword, SimpleNameSyntax name, SyntaxToken openBracketToken, SyntaxList<BaseMemberDeclarationSyntax> members, SyntaxToken closeBracketToken)
-    {
-        if (objectKeyword != this.ObjectKeyword || name != this.Name || openBracketToken != this.OpenBracketToken || members != this.Members || closeBracketToken != this.CloseBracketToken)
+        private readonly SyntaxToken caseKeyword;
+        private readonly SyntaxToken classKeyword;
+        private readonly SimpleNameSyntax name;
+        private readonly ParameterListSyntax arguments;
+        private readonly MemberBodySyntax body;
+        
+        internal ClassDeclarationSyntax(SyntaxKind kind, SyntaxToken caseKeyword, SyntaxToken classKeyword, SimpleNameSyntax name, ParameterListSyntax arguments, MemberBodySyntax body)
+            : base(kind)
         {
-            return SyntaxFactory.ObjectDeclaration(objectKeyword, name, openBracketToken, members, closeBracketToken);
+            this.SlotCount = 5;
+            this.caseKeyword = caseKeyword;
+            this.classKeyword = classKeyword;
+            this.name = name;
+            this.arguments = arguments;
+            this.body = body;
         }
-
-        return this;
-    }
-
-    public ObjectDeclarationSyntax WithObjectKeyword(SyntaxToken objectKeyword)
-    {
-        return this.Update(objectKeyword, this.Name, this.OpenBracketToken, this.Members, this.CloseBracketToken);
-    }
-
-    public ObjectDeclarationSyntax WithName(SimpleNameSyntax name)
-    {
-        return this.Update(this.ObjectKeyword, name, this.OpenBracketToken, this.Members, this.CloseBracketToken);
-    }
-
-    public ObjectDeclarationSyntax WithOpenBracketToken(SyntaxToken openBracketToken)
-    {
-        return this.Update(this.ObjectKeyword, this.Name, openBracketToken, this.Members, this.CloseBracketToken);
-    }
-
-    public ObjectDeclarationSyntax WithMembers(SyntaxList<BaseMemberDeclarationSyntax> members)
-    {
-        return this.Update(this.ObjectKeyword, this.Name, this.OpenBracketToken, members, this.CloseBracketToken);
-    }
-
-    public ObjectDeclarationSyntax WithCloseBracketToken(SyntaxToken closeBracketToken)
-    {
-        return this.Update(this.ObjectKeyword, this.Name, this.OpenBracketToken, this.Members, closeBracketToken);
-    }
-
-    public ObjectDeclarationSyntax AddMembers(params BaseMemberDeclarationSyntax[] items)
-    {
-        return this.WithMembers(this.Members.AddRange(items));
-    }
-  }
-
-  public sealed partial class ClassDeclarationSyntax : TopLevelMemberDeclarationSyntax
-  {
-    private readonly SyntaxToken caseKeyword;
-    private readonly SyntaxToken classKeyword;
-    private readonly SimpleNameSyntax name;
-    private readonly SyntaxToken openBracketToken;
-    private readonly SyntaxNode members;
-    private readonly SyntaxToken closeBracketToken;
-
-    internal ClassDeclarationSyntax(SyntaxKind kind, SyntaxToken caseKeyword, SyntaxToken classKeyword, SimpleNameSyntax name, SyntaxToken openBracketToken, SyntaxNode members, SyntaxToken closeBracketToken)
-        : base(kind)
-    {
-        this.SlotCount = 6;
-        this.caseKeyword = caseKeyword;
-        this.classKeyword = classKeyword;
-        this.name = name;
-        this.openBracketToken = openBracketToken;
-        this.members = members;
-        this.closeBracketToken = closeBracketToken;
-    }
-
-    public SyntaxToken CaseKeyword 
-    {
-        get
+        
+        public SyntaxToken CaseKeyword 
         {
-            return this.caseKeyword;
+            get
+            {
+                return this.caseKeyword;
+            }
         }
-    }
-
-    public SyntaxToken ClassKeyword 
-    {
-      get { return this.classKeyword; }
-    }
-
-    public SimpleNameSyntax Name 
-    {
-        get
+        
+        public SyntaxToken ClassKeyword 
         {
-            return this.name;
+            get { return this.classKeyword; }
         }
-    }
-
-    /// <summary>SyntaxToken representing open bracket.</summary>
-    public SyntaxToken OpenBracketToken 
-    {
-      get { return this.openBracketToken; }
-    }
-
-    public SyntaxList<BaseMemberDeclarationSyntax> Members 
-    {
-        get
+        
+        public SimpleNameSyntax Name 
         {
-            return new SyntaxList<BaseMemberDeclarationSyntax>(this.members);
+            get
+            {
+                return this.name;
+            }
         }
-    }
-
-    /// <summary>SyntaxToken representing close bracket.</summary>
-    public SyntaxToken CloseBracketToken 
-    {
-      get { return this.closeBracketToken; }
-    }
-
-    internal override SyntaxNode GetSlot(int index)
-    {
-        switch (index)
+        
+        public ParameterListSyntax Arguments 
         {
-            case 2: return this.name;
-            case 4: return this.members;
-            default: return null;
+            get
+            {
+                return this.arguments;
+            }
         }
-    }
-
-    public override TResult Accept<TResult>(SyntaxVisitor<TResult> visitor)
-    {
-        return visitor.VisitClassDeclaration(this);
-    }
-
-    public override void Accept(SyntaxVisitor visitor)
-    {
-        visitor.VisitClassDeclaration(this);
-    }
-
-    public ClassDeclarationSyntax Update(SyntaxToken caseKeyword, SyntaxToken classKeyword, SimpleNameSyntax name, SyntaxToken openBracketToken, SyntaxList<BaseMemberDeclarationSyntax> members, SyntaxToken closeBracketToken)
-    {
-        if (caseKeyword != this.CaseKeyword || classKeyword != this.ClassKeyword || name != this.Name || openBracketToken != this.OpenBracketToken || members != this.Members || closeBracketToken != this.CloseBracketToken)
+        
+        public MemberBodySyntax Body 
         {
-            return SyntaxFactory.ClassDeclaration(caseKeyword, classKeyword, name, openBracketToken, members, closeBracketToken);
+            get
+            {
+                return this.body;
+            }
         }
-
-        return this;
+        
+        internal override SyntaxNode GetSlot(int index)
+        {
+            switch (index)
+            {
+                case 2: return this.name;
+                case 3: return this.arguments;
+                case 4: return this.body;
+                default: return null;
+            }
+        }
+        
+        public override TResult Accept<TResult>(SyntaxVisitor<TResult> visitor)
+        {
+            return visitor.VisitClassDeclaration(this);
+        }
+        
+        public override void Accept(SyntaxVisitor visitor)
+        {
+            visitor.VisitClassDeclaration(this);
+        }
+        
+        public ClassDeclarationSyntax Update(SyntaxToken caseKeyword, SyntaxToken classKeyword, SimpleNameSyntax name, ParameterListSyntax arguments, MemberBodySyntax body)
+        {
+            if (caseKeyword != this.CaseKeyword || classKeyword != this.ClassKeyword || name != this.Name || arguments != this.Arguments || body != this.Body)
+            {
+                return SyntaxFactory.ClassDeclaration(caseKeyword, classKeyword, name, arguments, body);
+            }
+            
+            return this;
+        }
+        
+        public ClassDeclarationSyntax WithCaseKeyword(SyntaxToken caseKeyword)
+        {
+            return this.Update(caseKeyword, this.ClassKeyword, this.Name, this.Arguments, this.Body);
+        }
+        
+        public ClassDeclarationSyntax WithClassKeyword(SyntaxToken classKeyword)
+        {
+            return this.Update(this.CaseKeyword, classKeyword, this.Name, this.Arguments, this.Body);
+        }
+        
+        public ClassDeclarationSyntax WithName(SimpleNameSyntax name)
+        {
+            return this.Update(this.CaseKeyword, this.ClassKeyword, name, this.Arguments, this.Body);
+        }
+        
+        public ClassDeclarationSyntax WithArguments(ParameterListSyntax arguments)
+        {
+            return this.Update(this.CaseKeyword, this.ClassKeyword, this.Name, arguments, this.Body);
+        }
+        
+        public ClassDeclarationSyntax WithBody(MemberBodySyntax body)
+        {
+            return this.Update(this.CaseKeyword, this.ClassKeyword, this.Name, this.Arguments, body);
+        }
+        
+            public ClassDeclarationSyntax AddArgumentsParameters(params ParameterSyntax[] items)
+        {
+                    var arguments = this.Arguments ?? SyntaxFactory.ParameterList();
+                    return this.WithArguments(arguments.WithParameters(arguments.Parameters.AddRange(items)));
+        }
+        
+            public ClassDeclarationSyntax AddBodyMembers(params MemberDeclarationSyntax[] items)
+        {
+                    var body = this.Body ?? SyntaxFactory.MemberBody();
+                    return this.WithBody(body.WithMembers(body.Members.AddRange(items)));
+        }
+        
+        private bool Equals(ClassDeclarationSyntax other)
+        {
+            return Equals(caseKeyword, other.caseKeyword) &&
+                   Equals(classKeyword, other.classKeyword) &&
+                   Equals(name, other.name) &&
+                   Equals(arguments, other.arguments) &&
+                   Equals(body, other.body);
+        }
+        
+        public override bool Equals(object obj)
+        {
+            if (ReferenceEquals(null, obj)) return false;
+            if (ReferenceEquals(this, obj)) return true;
+            return obj is ClassDeclarationSyntax && Equals((ClassDeclarationSyntax)obj);
+        }
+        public override int GetHashCode()
+        {
+            unchecked
+            {
+                var hashCode = (caseKeyword != null ? caseKeyword.GetHashCode() : 0);
+                hashCode = (hashCode * 397) ^ classKeyword.GetHashCode();
+                hashCode = (hashCode * 397) ^ name.GetHashCode();
+                hashCode = (hashCode * 397) ^ (arguments != null ? arguments.GetHashCode() : 0);
+                hashCode = (hashCode * 397) ^ (body != null ? body.GetHashCode() : 0);
+                return hashCode;
+            }
+        }
     }
-
-    public ClassDeclarationSyntax WithCaseKeyword(SyntaxToken caseKeyword)
+    
+    public sealed partial class MemberBodySyntax : SyntaxNode
     {
-        return this.Update(caseKeyword, this.ClassKeyword, this.Name, this.OpenBracketToken, this.Members, this.CloseBracketToken);
+        private readonly SyntaxToken openBracketToken;
+        private readonly SyntaxNode members;
+        private readonly SyntaxToken closeBracketToken;
+        
+        internal MemberBodySyntax(SyntaxKind kind, SyntaxToken openBracketToken, SyntaxNode members, SyntaxToken closeBracketToken)
+            : base(kind)
+        {
+            this.SlotCount = 3;
+            this.openBracketToken = openBracketToken;
+            this.members = members;
+            this.closeBracketToken = closeBracketToken;
+        }
+        
+        /// <summary>SyntaxToken representing open bracket.</summary>
+        public SyntaxToken OpenBracketToken 
+        {
+            get { return this.openBracketToken; }
+        }
+        
+        public SyntaxList<MemberDeclarationSyntax> Members 
+        {
+            get
+            {
+                return new SyntaxList<MemberDeclarationSyntax>(this.members);
+            }
+        }
+        
+        /// <summary>SyntaxToken representing close bracket.</summary>
+        public SyntaxToken CloseBracketToken 
+        {
+            get { return this.closeBracketToken; }
+        }
+        
+        internal override SyntaxNode GetSlot(int index)
+        {
+            switch (index)
+            {
+                case 1: return this.members;
+                default: return null;
+            }
+        }
+        
+        public override TResult Accept<TResult>(SyntaxVisitor<TResult> visitor)
+        {
+            return visitor.VisitMemberBody(this);
+        }
+        
+        public override void Accept(SyntaxVisitor visitor)
+        {
+            visitor.VisitMemberBody(this);
+        }
+        
+        public MemberBodySyntax Update(SyntaxToken openBracketToken, SyntaxList<MemberDeclarationSyntax> members, SyntaxToken closeBracketToken)
+        {
+            if (openBracketToken != this.OpenBracketToken || members != this.Members || closeBracketToken != this.CloseBracketToken)
+            {
+                return SyntaxFactory.MemberBody(openBracketToken, members, closeBracketToken);
+            }
+            
+            return this;
+        }
+        
+        public MemberBodySyntax WithOpenBracketToken(SyntaxToken openBracketToken)
+        {
+            return this.Update(openBracketToken, this.Members, this.CloseBracketToken);
+        }
+        
+        public MemberBodySyntax WithMembers(SyntaxList<MemberDeclarationSyntax> members)
+        {
+            return this.Update(this.OpenBracketToken, members, this.CloseBracketToken);
+        }
+        
+        public MemberBodySyntax WithCloseBracketToken(SyntaxToken closeBracketToken)
+        {
+            return this.Update(this.OpenBracketToken, this.Members, closeBracketToken);
+        }
+        
+        public MemberBodySyntax AddMembers(params MemberDeclarationSyntax[] items)
+        {
+            return this.WithMembers(this.Members.AddRange(items));
+        }
+        
+        private bool Equals(MemberBodySyntax other)
+        {
+            return Equals(openBracketToken, other.openBracketToken) &&
+                   Equals(members, other.members) &&
+                   Equals(closeBracketToken, other.closeBracketToken);
+        }
+        
+        public override bool Equals(object obj)
+        {
+            if (ReferenceEquals(null, obj)) return false;
+            if (ReferenceEquals(this, obj)) return true;
+            return obj is MemberBodySyntax && Equals((MemberBodySyntax)obj);
+        }
+        public override int GetHashCode()
+        {
+            unchecked
+            {
+                var hashCode = openBracketToken.GetHashCode();
+                hashCode = (hashCode * 397) ^ members.GetHashCode();
+                hashCode = (hashCode * 397) ^ closeBracketToken.GetHashCode();
+                return hashCode;
+            }
+        }
     }
-
-    public ClassDeclarationSyntax WithClassKeyword(SyntaxToken classKeyword)
+    
+    /// <summary>Parameter list syntax.</summary>
+    public sealed partial class ParameterListSyntax : SyntaxNode
     {
-        return this.Update(this.CaseKeyword, classKeyword, this.Name, this.OpenBracketToken, this.Members, this.CloseBracketToken);
+        private readonly SyntaxToken openParenToken;
+        private readonly SyntaxNode parameters;
+        private readonly SyntaxToken closeParenToken;
+        
+        internal ParameterListSyntax(SyntaxKind kind, SyntaxToken openParenToken, SyntaxNode parameters, SyntaxToken closeParenToken)
+            : base(kind)
+        {
+            this.SlotCount = 3;
+            this.openParenToken = openParenToken;
+            this.parameters = parameters;
+            this.closeParenToken = closeParenToken;
+        }
+        
+        /// <summary>Gets the open paren token.</summary>
+        public SyntaxToken OpenParenToken 
+        {
+            get { return this.openParenToken; }
+        }
+        
+        public SeparatedSyntaxList<ParameterSyntax> Parameters 
+        {
+            get
+            {
+                var red = this.parameters;
+                if (red != null)
+                    return new SeparatedSyntaxList<ParameterSyntax>(red);
+                
+                return default(SeparatedSyntaxList<ParameterSyntax>);
+            }
+        }
+        
+        /// <summary>Gets the close paren token.</summary>
+        public SyntaxToken CloseParenToken 
+        {
+            get { return this.closeParenToken; }
+        }
+        
+        internal override SyntaxNode GetSlot(int index)
+        {
+            switch (index)
+            {
+                case 1: return this.parameters;
+                default: return null;
+            }
+        }
+        
+        public override TResult Accept<TResult>(SyntaxVisitor<TResult> visitor)
+        {
+            return visitor.VisitParameterList(this);
+        }
+        
+        public override void Accept(SyntaxVisitor visitor)
+        {
+            visitor.VisitParameterList(this);
+        }
+        
+        public ParameterListSyntax Update(SyntaxToken openParenToken, SeparatedSyntaxList<ParameterSyntax> parameters, SyntaxToken closeParenToken)
+        {
+            if (openParenToken != this.OpenParenToken || parameters != this.Parameters || closeParenToken != this.CloseParenToken)
+            {
+                return SyntaxFactory.ParameterList(openParenToken, parameters, closeParenToken);
+            }
+            
+            return this;
+        }
+        
+        public ParameterListSyntax WithOpenParenToken(SyntaxToken openParenToken)
+        {
+            return this.Update(openParenToken, this.Parameters, this.CloseParenToken);
+        }
+        
+        public ParameterListSyntax WithParameters(SeparatedSyntaxList<ParameterSyntax> parameters)
+        {
+            return this.Update(this.OpenParenToken, parameters, this.CloseParenToken);
+        }
+        
+        public ParameterListSyntax WithCloseParenToken(SyntaxToken closeParenToken)
+        {
+            return this.Update(this.OpenParenToken, this.Parameters, closeParenToken);
+        }
+        
+        public ParameterListSyntax AddParameters(params ParameterSyntax[] items)
+        {
+            return this.WithParameters(this.Parameters.AddRange(items));
+        }
+        
+        private bool Equals(ParameterListSyntax other)
+        {
+            return Equals(openParenToken, other.openParenToken) &&
+                   Equals(parameters, other.parameters) &&
+                   Equals(closeParenToken, other.closeParenToken);
+        }
+        
+        public override bool Equals(object obj)
+        {
+            if (ReferenceEquals(null, obj)) return false;
+            if (ReferenceEquals(this, obj)) return true;
+            return obj is ParameterListSyntax && Equals((ParameterListSyntax)obj);
+        }
+        public override int GetHashCode()
+        {
+            unchecked
+            {
+                var hashCode = openParenToken.GetHashCode();
+                hashCode = (hashCode * 397) ^ parameters.GetHashCode();
+                hashCode = (hashCode * 397) ^ closeParenToken.GetHashCode();
+                return hashCode;
+            }
+        }
     }
-
-    public ClassDeclarationSyntax WithName(SimpleNameSyntax name)
+    
+    /// <summary>Parameter syntax.</summary>
+    public sealed partial class ParameterSyntax : SyntaxNode
     {
-        return this.Update(this.CaseKeyword, this.ClassKeyword, name, this.OpenBracketToken, this.Members, this.CloseBracketToken);
+        private readonly SyntaxToken identifier;
+        private readonly TypeAnnotationSyntax typeAnnotation;
+        
+        internal ParameterSyntax(SyntaxKind kind, SyntaxToken identifier, TypeAnnotationSyntax typeAnnotation)
+            : base(kind)
+        {
+            this.SlotCount = 2;
+            this.identifier = identifier;
+            this.typeAnnotation = typeAnnotation;
+        }
+        
+        /// <summary>Gets the identifier.</summary>
+        public SyntaxToken Identifier 
+        {
+            get { return this.identifier; }
+        }
+        
+        public TypeAnnotationSyntax TypeAnnotation 
+        {
+            get
+            {
+                return this.typeAnnotation;
+            }
+        }
+        
+        internal override SyntaxNode GetSlot(int index)
+        {
+            switch (index)
+            {
+                case 1: return this.typeAnnotation;
+                default: return null;
+            }
+        }
+        
+        public override TResult Accept<TResult>(SyntaxVisitor<TResult> visitor)
+        {
+            return visitor.VisitParameter(this);
+        }
+        
+        public override void Accept(SyntaxVisitor visitor)
+        {
+            visitor.VisitParameter(this);
+        }
+        
+        public ParameterSyntax Update(SyntaxToken identifier, TypeAnnotationSyntax typeAnnotation)
+        {
+            if (identifier != this.Identifier || typeAnnotation != this.TypeAnnotation)
+            {
+                return SyntaxFactory.Parameter(identifier, typeAnnotation);
+            }
+            
+            return this;
+        }
+        
+        public ParameterSyntax WithIdentifier(SyntaxToken identifier)
+        {
+            return this.Update(identifier, this.TypeAnnotation);
+        }
+        
+        public ParameterSyntax WithTypeAnnotation(TypeAnnotationSyntax typeAnnotation)
+        {
+            return this.Update(this.Identifier, typeAnnotation);
+        }
+        
+        private bool Equals(ParameterSyntax other)
+        {
+            return Equals(identifier, other.identifier) &&
+                   Equals(typeAnnotation, other.typeAnnotation);
+        }
+        
+        public override bool Equals(object obj)
+        {
+            if (ReferenceEquals(null, obj)) return false;
+            if (ReferenceEquals(this, obj)) return true;
+            return obj is ParameterSyntax && Equals((ParameterSyntax)obj);
+        }
+        public override int GetHashCode()
+        {
+            unchecked
+            {
+                var hashCode = identifier.GetHashCode();
+                hashCode = (hashCode * 397) ^ typeAnnotation.GetHashCode();
+                return hashCode;
+            }
+        }
     }
-
-    public ClassDeclarationSyntax WithOpenBracketToken(SyntaxToken openBracketToken)
+    
+    public sealed partial class TypeAnnotationSyntax : SyntaxNode
     {
-        return this.Update(this.CaseKeyword, this.ClassKeyword, this.Name, openBracketToken, this.Members, this.CloseBracketToken);
+        private readonly SyntaxToken colonToken;
+        private readonly TypeSyntax type;
+        
+        internal TypeAnnotationSyntax(SyntaxKind kind, SyntaxToken colonToken, TypeSyntax type)
+            : base(kind)
+        {
+            this.SlotCount = 2;
+            this.colonToken = colonToken;
+            this.type = type;
+        }
+        
+        public SyntaxToken ColonToken 
+        {
+            get { return this.colonToken; }
+        }
+        
+        public TypeSyntax Type 
+        {
+            get
+            {
+                return this.type;
+            }
+        }
+        
+        internal override SyntaxNode GetSlot(int index)
+        {
+            switch (index)
+            {
+                case 1: return this.type;
+                default: return null;
+            }
+        }
+        
+        public override TResult Accept<TResult>(SyntaxVisitor<TResult> visitor)
+        {
+            return visitor.VisitTypeAnnotation(this);
+        }
+        
+        public override void Accept(SyntaxVisitor visitor)
+        {
+            visitor.VisitTypeAnnotation(this);
+        }
+        
+        public TypeAnnotationSyntax Update(SyntaxToken colonToken, TypeSyntax type)
+        {
+            if (colonToken != this.ColonToken || type != this.Type)
+            {
+                return SyntaxFactory.TypeAnnotation(colonToken, type);
+            }
+            
+            return this;
+        }
+        
+        public TypeAnnotationSyntax WithColonToken(SyntaxToken colonToken)
+        {
+            return this.Update(colonToken, this.Type);
+        }
+        
+        public TypeAnnotationSyntax WithType(TypeSyntax type)
+        {
+            return this.Update(this.ColonToken, type);
+        }
+        
+        private bool Equals(TypeAnnotationSyntax other)
+        {
+            return Equals(colonToken, other.colonToken) &&
+                   Equals(type, other.type);
+        }
+        
+        public override bool Equals(object obj)
+        {
+            if (ReferenceEquals(null, obj)) return false;
+            if (ReferenceEquals(this, obj)) return true;
+            return obj is TypeAnnotationSyntax && Equals((TypeAnnotationSyntax)obj);
+        }
+        public override int GetHashCode()
+        {
+            unchecked
+            {
+                var hashCode = colonToken.GetHashCode();
+                hashCode = (hashCode * 397) ^ type.GetHashCode();
+                return hashCode;
+            }
+        }
     }
-
-    public ClassDeclarationSyntax WithMembers(SyntaxList<BaseMemberDeclarationSyntax> members)
+    
+    public sealed partial class MethodDeclarationSyntax : MemberDeclarationSyntax
     {
-        return this.Update(this.CaseKeyword, this.ClassKeyword, this.Name, this.OpenBracketToken, members, this.CloseBracketToken);
+        private readonly SyntaxToken defKeyword;
+        private readonly SimpleNameSyntax name;
+        private readonly ParameterListSyntax arguments;
+        private readonly TypeAnnotationSyntax returnType;
+        private readonly AssignmentSyntax assignment;
+        
+        internal MethodDeclarationSyntax(SyntaxKind kind, SyntaxToken defKeyword, SimpleNameSyntax name, ParameterListSyntax arguments, TypeAnnotationSyntax returnType, AssignmentSyntax assignment)
+            : base(kind)
+        {
+            this.SlotCount = 5;
+            this.defKeyword = defKeyword;
+            this.name = name;
+            this.arguments = arguments;
+            this.returnType = returnType;
+            this.assignment = assignment;
+        }
+        
+        public SyntaxToken DefKeyword 
+        {
+            get { return this.defKeyword; }
+        }
+        
+        public SimpleNameSyntax Name 
+        {
+            get
+            {
+                return this.name;
+            }
+        }
+        
+        public ParameterListSyntax Arguments 
+        {
+            get
+            {
+                return this.arguments;
+            }
+        }
+        
+        public TypeAnnotationSyntax ReturnType 
+        {
+            get
+            {
+                return this.returnType;
+            }
+        }
+        
+        public AssignmentSyntax Assignment 
+        {
+            get
+            {
+                return this.assignment;
+            }
+        }
+        
+        internal override SyntaxNode GetSlot(int index)
+        {
+            switch (index)
+            {
+                case 1: return this.name;
+                case 2: return this.arguments;
+                case 3: return this.returnType;
+                case 4: return this.assignment;
+                default: return null;
+            }
+        }
+        
+        public override TResult Accept<TResult>(SyntaxVisitor<TResult> visitor)
+        {
+            return visitor.VisitMethodDeclaration(this);
+        }
+        
+        public override void Accept(SyntaxVisitor visitor)
+        {
+            visitor.VisitMethodDeclaration(this);
+        }
+        
+        public MethodDeclarationSyntax Update(SyntaxToken defKeyword, SimpleNameSyntax name, ParameterListSyntax arguments, TypeAnnotationSyntax returnType, AssignmentSyntax assignment)
+        {
+            if (defKeyword != this.DefKeyword || name != this.Name || arguments != this.Arguments || returnType != this.ReturnType || assignment != this.Assignment)
+            {
+                return SyntaxFactory.MethodDeclaration(defKeyword, name, arguments, returnType, assignment);
+            }
+            
+            return this;
+        }
+        
+        public MethodDeclarationSyntax WithDefKeyword(SyntaxToken defKeyword)
+        {
+            return this.Update(defKeyword, this.Name, this.Arguments, this.ReturnType, this.Assignment);
+        }
+        
+        public MethodDeclarationSyntax WithName(SimpleNameSyntax name)
+        {
+            return this.Update(this.DefKeyword, name, this.Arguments, this.ReturnType, this.Assignment);
+        }
+        
+        public MethodDeclarationSyntax WithArguments(ParameterListSyntax arguments)
+        {
+            return this.Update(this.DefKeyword, this.Name, arguments, this.ReturnType, this.Assignment);
+        }
+        
+        public MethodDeclarationSyntax WithReturnType(TypeAnnotationSyntax returnType)
+        {
+            return this.Update(this.DefKeyword, this.Name, this.Arguments, returnType, this.Assignment);
+        }
+        
+        public MethodDeclarationSyntax WithAssignment(AssignmentSyntax assignment)
+        {
+            return this.Update(this.DefKeyword, this.Name, this.Arguments, this.ReturnType, assignment);
+        }
+        
+            public MethodDeclarationSyntax AddArgumentsParameters(params ParameterSyntax[] items)
+        {
+                    var arguments = this.Arguments ?? SyntaxFactory.ParameterList();
+                    return this.WithArguments(arguments.WithParameters(arguments.Parameters.AddRange(items)));
+        }
+        
+        private bool Equals(MethodDeclarationSyntax other)
+        {
+            return Equals(defKeyword, other.defKeyword) &&
+                   Equals(name, other.name) &&
+                   Equals(arguments, other.arguments) &&
+                   Equals(returnType, other.returnType) &&
+                   Equals(assignment, other.assignment);
+        }
+        
+        public override bool Equals(object obj)
+        {
+            if (ReferenceEquals(null, obj)) return false;
+            if (ReferenceEquals(this, obj)) return true;
+            return obj is MethodDeclarationSyntax && Equals((MethodDeclarationSyntax)obj);
+        }
+        public override int GetHashCode()
+        {
+            unchecked
+            {
+                var hashCode = defKeyword.GetHashCode();
+                hashCode = (hashCode * 397) ^ name.GetHashCode();
+                hashCode = (hashCode * 397) ^ (arguments != null ? arguments.GetHashCode() : 0);
+                hashCode = (hashCode * 397) ^ (returnType != null ? returnType.GetHashCode() : 0);
+                hashCode = (hashCode * 397) ^ (assignment != null ? assignment.GetHashCode() : 0);
+                return hashCode;
+            }
+        }
     }
-
-    public ClassDeclarationSyntax WithCloseBracketToken(SyntaxToken closeBracketToken)
+    
+    public sealed partial class AssignmentSyntax : SyntaxNode
     {
-        return this.Update(this.CaseKeyword, this.ClassKeyword, this.Name, this.OpenBracketToken, this.Members, closeBracketToken);
+        private readonly SyntaxToken equalsToken;
+        private readonly ExpressionSyntax expression;
+        
+        internal AssignmentSyntax(SyntaxKind kind, SyntaxToken equalsToken, ExpressionSyntax expression)
+            : base(kind)
+        {
+            this.SlotCount = 2;
+            this.equalsToken = equalsToken;
+            this.expression = expression;
+        }
+        
+        public SyntaxToken EqualsToken 
+        {
+            get { return this.equalsToken; }
+        }
+        
+        public ExpressionSyntax Expression 
+        {
+            get
+            {
+                return this.expression;
+            }
+        }
+        
+        internal override SyntaxNode GetSlot(int index)
+        {
+            switch (index)
+            {
+                case 1: return this.expression;
+                default: return null;
+            }
+        }
+        
+        public override TResult Accept<TResult>(SyntaxVisitor<TResult> visitor)
+        {
+            return visitor.VisitAssignment(this);
+        }
+        
+        public override void Accept(SyntaxVisitor visitor)
+        {
+            visitor.VisitAssignment(this);
+        }
+        
+        public AssignmentSyntax Update(SyntaxToken equalsToken, ExpressionSyntax expression)
+        {
+            if (equalsToken != this.EqualsToken || expression != this.Expression)
+            {
+                return SyntaxFactory.Assignment(equalsToken, expression);
+            }
+            
+            return this;
+        }
+        
+        public AssignmentSyntax WithEqualsToken(SyntaxToken equalsToken)
+        {
+            return this.Update(equalsToken, this.Expression);
+        }
+        
+        public AssignmentSyntax WithExpression(ExpressionSyntax expression)
+        {
+            return this.Update(this.EqualsToken, expression);
+        }
+        
+        private bool Equals(AssignmentSyntax other)
+        {
+            return Equals(equalsToken, other.equalsToken) &&
+                   Equals(expression, other.expression);
+        }
+        
+        public override bool Equals(object obj)
+        {
+            if (ReferenceEquals(null, obj)) return false;
+            if (ReferenceEquals(this, obj)) return true;
+            return obj is AssignmentSyntax && Equals((AssignmentSyntax)obj);
+        }
+        public override int GetHashCode()
+        {
+            unchecked
+            {
+                var hashCode = equalsToken.GetHashCode();
+                hashCode = (hashCode * 397) ^ expression.GetHashCode();
+                return hashCode;
+            }
+        }
     }
-
-    public ClassDeclarationSyntax AddMembers(params BaseMemberDeclarationSyntax[] items)
+    
+    public sealed partial class BlockSyntax : ExpressionSyntax
     {
-        return this.WithMembers(this.Members.AddRange(items));
+        private readonly SyntaxToken openBracketToken;
+        private readonly SyntaxNode members;
+        private readonly SyntaxToken closeBracketToken;
+        
+        internal BlockSyntax(SyntaxKind kind, SyntaxToken openBracketToken, SyntaxNode members, SyntaxToken closeBracketToken)
+            : base(kind)
+        {
+            this.SlotCount = 3;
+            this.openBracketToken = openBracketToken;
+            this.members = members;
+            this.closeBracketToken = closeBracketToken;
+        }
+        
+        public SyntaxToken OpenBracketToken 
+        {
+            get { return this.openBracketToken; }
+        }
+        
+        public SyntaxList<MemberDeclarationSyntax> Members 
+        {
+            get
+            {
+                return new SyntaxList<MemberDeclarationSyntax>(this.members);
+            }
+        }
+        
+        public SyntaxToken CloseBracketToken 
+        {
+            get { return this.closeBracketToken; }
+        }
+        
+        internal override SyntaxNode GetSlot(int index)
+        {
+            switch (index)
+            {
+                case 1: return this.members;
+                default: return null;
+            }
+        }
+        
+        public override TResult Accept<TResult>(SyntaxVisitor<TResult> visitor)
+        {
+            return visitor.VisitBlock(this);
+        }
+        
+        public override void Accept(SyntaxVisitor visitor)
+        {
+            visitor.VisitBlock(this);
+        }
+        
+        public BlockSyntax Update(SyntaxToken openBracketToken, SyntaxList<MemberDeclarationSyntax> members, SyntaxToken closeBracketToken)
+        {
+            if (openBracketToken != this.OpenBracketToken || members != this.Members || closeBracketToken != this.CloseBracketToken)
+            {
+                return SyntaxFactory.Block(openBracketToken, members, closeBracketToken);
+            }
+            
+            return this;
+        }
+        
+        public BlockSyntax WithOpenBracketToken(SyntaxToken openBracketToken)
+        {
+            return this.Update(openBracketToken, this.Members, this.CloseBracketToken);
+        }
+        
+        public BlockSyntax WithMembers(SyntaxList<MemberDeclarationSyntax> members)
+        {
+            return this.Update(this.OpenBracketToken, members, this.CloseBracketToken);
+        }
+        
+        public BlockSyntax WithCloseBracketToken(SyntaxToken closeBracketToken)
+        {
+            return this.Update(this.OpenBracketToken, this.Members, closeBracketToken);
+        }
+        
+        public BlockSyntax AddMembers(params MemberDeclarationSyntax[] items)
+        {
+            return this.WithMembers(this.Members.AddRange(items));
+        }
+        
+        private bool Equals(BlockSyntax other)
+        {
+            return Equals(openBracketToken, other.openBracketToken) &&
+                   Equals(members, other.members) &&
+                   Equals(closeBracketToken, other.closeBracketToken);
+        }
+        
+        public override bool Equals(object obj)
+        {
+            if (ReferenceEquals(null, obj)) return false;
+            if (ReferenceEquals(this, obj)) return true;
+            return obj is BlockSyntax && Equals((BlockSyntax)obj);
+        }
+        public override int GetHashCode()
+        {
+            unchecked
+            {
+                var hashCode = openBracketToken.GetHashCode();
+                hashCode = (hashCode * 397) ^ members.GetHashCode();
+                hashCode = (hashCode * 397) ^ closeBracketToken.GetHashCode();
+                return hashCode;
+            }
+        }
     }
-  }
-
-  public abstract partial class BaseMethodDeclarationSyntax : TopLevelMemberDeclarationSyntax
-  {
-    internal BaseMethodDeclarationSyntax(SyntaxKind kind)
-      : base(kind)
-    {
     }
-
-    public abstract SyntaxToken ClassKeyword { get; }
-
-    public abstract SimpleNameSyntax Name { get; }
-
-    /// <summary>SyntaxToken representing open bracket.</summary>
-    public abstract SyntaxToken OpenBracketToken { get; }
-
-    public abstract SyntaxList<BaseMemberDeclarationSyntax> Members { get; }
-
-    /// <summary>SyntaxToken representing close bracket.</summary>
-    public abstract SyntaxToken CloseBracketToken { get; }
-  }
-}

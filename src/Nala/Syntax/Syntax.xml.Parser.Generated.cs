@@ -19,146 +19,302 @@ namespace Nala
             from s in Char('.')
             from __ in SyntaxTriviaParser
             select new SyntaxToken(SyntaxKind.DotToken);
-
+        
         public static Parser<SyntaxToken> OpenKeywordParser =>
             from _ in SyntaxTriviaParser
             from s in String("open")
             from __ in SyntaxTriviaParser
             select new SyntaxToken(SyntaxKind.OpenKeyword);
-
+        
         public static Parser<SyntaxToken> NamespaceKeywordParser =>
             from _ in SyntaxTriviaParser
             from s in String("namespace")
             from __ in SyntaxTriviaParser
             select new SyntaxToken(SyntaxKind.NamespaceKeyword);
-
+        
         public static Parser<SyntaxToken> TraitKeywordParser =>
             from _ in SyntaxTriviaParser
             from s in String("trait")
             from __ in SyntaxTriviaParser
             select new SyntaxToken(SyntaxKind.TraitKeyword);
-
+        
         public static Parser<SyntaxToken> ClassKeywordParser =>
             from _ in SyntaxTriviaParser
             from s in String("class")
             from __ in SyntaxTriviaParser
             select new SyntaxToken(SyntaxKind.ClassKeyword);
-
+        
         public static Parser<SyntaxToken> ObjectKeywordParser =>
             from _ in SyntaxTriviaParser
             from s in String("object")
             from __ in SyntaxTriviaParser
             select new SyntaxToken(SyntaxKind.ObjectKeyword);
-
+        
         public static Parser<SyntaxToken> CaseKeywordParser =>
             from _ in SyntaxTriviaParser
             from s in String("case")
             from __ in SyntaxTriviaParser
             select new SyntaxToken(SyntaxKind.CaseKeyword);
-
+        
+        public static Parser<SyntaxToken> DefKeywordParser =>
+            from _ in SyntaxTriviaParser
+            from s in String("def")
+            from __ in SyntaxTriviaParser
+            select new SyntaxToken(SyntaxKind.DefKeyword);
+        
         public static Parser<SyntaxToken> OpenBracketTokenParser =>
             from _ in SyntaxTriviaParser
             from s in Char('{')
             from __ in SyntaxTriviaParser
             select new SyntaxToken(SyntaxKind.OpenBracketToken);
-
+        
         public static Parser<SyntaxToken> CloseBracketTokenParser =>
             from _ in SyntaxTriviaParser
             from s in Char('}')
             from __ in SyntaxTriviaParser
             select new SyntaxToken(SyntaxKind.CloseBracketToken);
-
-
+        
+        public static Parser<SyntaxToken> OpenParenTokenParser =>
+            from _ in SyntaxTriviaParser
+            from s in Char('(')
+            from __ in SyntaxTriviaParser
+            select new SyntaxToken(SyntaxKind.OpenParenToken);
+        
+        public static Parser<SyntaxToken> CloseParenTokenParser =>
+            from _ in SyntaxTriviaParser
+            from s in Char(')')
+            from __ in SyntaxTriviaParser
+            select new SyntaxToken(SyntaxKind.CloseParenToken);
+        
+        public static Parser<SyntaxToken> CommaTokenParser =>
+            from _ in SyntaxTriviaParser
+            from s in Char(',')
+            from __ in SyntaxTriviaParser
+            select new SyntaxToken(SyntaxKind.CommaToken);
+        
+        public static Parser<SyntaxToken> ColonTokenParser =>
+            from _ in SyntaxTriviaParser
+            from s in Char(':')
+            from __ in SyntaxTriviaParser
+            select new SyntaxToken(SyntaxKind.ColonToken);
+        
+        public static Parser<SyntaxToken> EqualsTokenParser =>
+            from _ in SyntaxTriviaParser
+            from s in Char('=')
+            from __ in SyntaxTriviaParser
+            select new SyntaxToken(SyntaxKind.EqualsToken);
+        
+        public static Parser<SyntaxToken> PlusTokenParser =>
+            from _ in SyntaxTriviaParser
+            from s in Char('+')
+            from __ in SyntaxTriviaParser
+            select new SyntaxToken(SyntaxKind.PlusToken);
+        
+        public static Parser<SyntaxToken> AsteriskTokenParser =>
+            from _ in SyntaxTriviaParser
+            from s in Char('*')
+            from __ in SyntaxTriviaParser
+            select new SyntaxToken(SyntaxKind.AsteriskToken);
+        
+        public static Parser<SyntaxToken> SlashTokenParser =>
+            from _ in SyntaxTriviaParser
+            from s in Char('/')
+            from __ in SyntaxTriviaParser
+            select new SyntaxToken(SyntaxKind.SlashToken);
+        
+        public static Parser<SyntaxToken> EqualsEqualsTokenParser =>
+            from _ in SyntaxTriviaParser
+            from s in String("==")
+            from __ in SyntaxTriviaParser
+            select new SyntaxToken(SyntaxKind.EqualsEqualsToken);
+        
+        public static Parser<SyntaxToken> GreaterThanEqualsTokenParser =>
+            from _ in SyntaxTriviaParser
+            from s in String(">=")
+            from __ in SyntaxTriviaParser
+            select new SyntaxToken(SyntaxKind.GreaterThanEqualsToken);
+        
+        public static Parser<SyntaxToken> LessThanEqualsTokenParser =>
+            from _ in SyntaxTriviaParser
+            from s in String("<=")
+            from __ in SyntaxTriviaParser
+            select new SyntaxToken(SyntaxKind.LessThanEqualsToken);
+        
+        public static Parser<SyntaxToken> MinusTokenParser =>
+            from _ in SyntaxTriviaParser
+            from s in Char('-')
+            from __ in SyntaxTriviaParser
+            select new SyntaxToken(SyntaxKind.MinusToken);
+        
+        public static Parser<SyntaxToken> PercentTokenParser =>
+            from _ in SyntaxTriviaParser
+            from s in Char('%')
+            from __ in SyntaxTriviaParser
+            select new SyntaxToken(SyntaxKind.PercentToken);
+        
+        public static Parser<SyntaxToken> LessThanTokenParser =>
+            from _ in SyntaxTriviaParser
+            from s in Char('<')
+            from __ in SyntaxTriviaParser
+            select new SyntaxToken(SyntaxKind.LessThanToken);
+        
+        public static Parser<SyntaxToken> AmpersandAmpersandTokenParser =>
+            from _ in SyntaxTriviaParser
+            from s in String("&&")
+            from __ in SyntaxTriviaParser
+            select new SyntaxToken(SyntaxKind.AmpersandAmpersandToken);
+        
+        public static Parser<SyntaxToken> QuestionQuestionTokenParser =>
+            from _ in SyntaxTriviaParser
+            from s in String("??")
+            from __ in SyntaxTriviaParser
+            select new SyntaxToken(SyntaxKind.QuestionQuestionToken);
+        
+        
+        public static IEnumerable<Parser<NameSyntax>> NameParsers
+        {
+            get
+            {
+                yield return SimpleNameParser.Select(x => (NameSyntax)x).Trace("SimpleName");
+                yield return QualifiedNameParser.Select(x => (NameSyntax)x).Trace("QualifiedName");
+            }
+        }
+        
         public static Parser<NameSyntax> NameParser =>
-            new Parser<NameSyntax>[] { 
-                SimpleNameParser.Select(x => (NameSyntax)x).Trace("SimpleName"),
-                QualifiedNameParser.Select(x => (NameSyntax)x).Trace("QualifiedName")
-           }.Choice();
-
+            NameParsers.Choice();
+        
         public static Parser<SimpleNameSyntax> SimpleNameParser =>
             from identifierName in IdentifierNameParser
             select (SimpleNameSyntax)identifierName;
-
+        
         public static Parser<TypeSyntax> TypeParser =>
             from name in NameParser
             select (TypeSyntax)name;
-
+        
+        public static IEnumerable<Parser<ExpressionSyntax>> ExpressionParsers
+        {
+            get
+            {
+                yield return TypeParser.Select(x => (ExpressionSyntax)x).Trace("Type");
+                yield return BlockParser.Select(x => (ExpressionSyntax)x).Trace("Block");
+            }
+        }
+        
         public static Parser<ExpressionSyntax> ExpressionParser =>
-            from type in TypeParser
-            select (ExpressionSyntax)type;
-
-        public static Parser<BaseMemberDeclarationSyntax> BaseMemberDeclarationParser =>
-            new Parser<BaseMemberDeclarationSyntax>[] { 
-                MemberDeclarationParser.Select(x => (BaseMemberDeclarationSyntax)x).Trace("MemberDeclaration"),
-                TopLevelMemberDeclarationParser.Select(x => (BaseMemberDeclarationSyntax)x).Trace("TopLevelMemberDeclaration")
-           }.Choice();
-
+            ExpressionParsers.Choice();
+        
+        public static IEnumerable<Parser<MemberDeclarationSyntax>> MemberDeclarationParsers
+        {
+            get
+            {
+                yield return ExpressionParser.Select(x => (MemberDeclarationSyntax)x).Trace("Expression");
+                yield return TypeDeclarationParser.Select(x => (MemberDeclarationSyntax)x).Trace("TypeDeclaration");
+                yield return MethodDeclarationParser.Select(x => (MemberDeclarationSyntax)x).Trace("MethodDeclaration");
+            }
+        }
+        
         public static Parser<MemberDeclarationSyntax> MemberDeclarationParser =>
-            new Parser<MemberDeclarationSyntax>[] { 
-           }.Choice();
-
-        public static Parser<TopLevelMemberDeclarationSyntax> TopLevelMemberDeclarationParser =>
-            new Parser<TopLevelMemberDeclarationSyntax>[] { 
-                TraitDeclarationParser.Select(x => (TopLevelMemberDeclarationSyntax)x).Trace("TraitDeclaration"),
-                ObjectDeclarationParser.Select(x => (TopLevelMemberDeclarationSyntax)x).Trace("ObjectDeclaration"),
-                ClassDeclarationParser.Select(x => (TopLevelMemberDeclarationSyntax)x).Trace("ClassDeclaration"),
-                BaseMethodDeclarationParser.Select(x => (TopLevelMemberDeclarationSyntax)x).Trace("BaseMethodDeclaration")
-           }.Choice();
-
-        public static Parser<BaseMethodDeclarationSyntax> BaseMethodDeclarationParser =>
-            new Parser<BaseMethodDeclarationSyntax>[] { 
-           }.Choice();
-
+            MemberDeclarationParsers.Choice();
+        
+        public static IEnumerable<Parser<TypeDeclarationSyntax>> TypeDeclarationParsers
+        {
+            get
+            {
+                yield return TraitDeclarationParser.Select(x => (TypeDeclarationSyntax)x).Trace("TraitDeclaration");
+                yield return ObjectDeclarationParser.Select(x => (TypeDeclarationSyntax)x).Trace("ObjectDeclaration");
+                yield return ClassDeclarationParser.Select(x => (TypeDeclarationSyntax)x).Trace("ClassDeclaration");
+            }
+        }
+        
+        public static Parser<TypeDeclarationSyntax> TypeDeclarationParser =>
+            TypeDeclarationParsers.Choice();
+        
         public static Parser<IdentifierNameSyntax> IdentifierNameParser =>
-            from identifier in IdentifierTokenParser
+            from identifier in IdentifierTokenParser.Trace("IdentifierToken")
             select SyntaxFactory.IdentifierName(identifier);
-
+        
         public static Parser<QualifiedNameSyntax> QualifiedNameParser =>
             from left in NameParser.Trace("Name")
-            from dotToken in DotTokenParser
+            from dotToken in DotTokenParser.Trace("DotToken")
             from right in SimpleNameParser.Trace("SimpleName")
             select SyntaxFactory.QualifiedName(left, dotToken, right);
-
+        
         public static Parser<CompilationUnitSyntax> CompilationUnitParser =>
             from @namespace in NamespaceDeclarationParser.ZeroOrOne().Trace("NamespaceDeclaration")
             from usings in SyntaxListParser(OpenDirectiveParser).Trace("OpenDirective")
-            from members in SyntaxListParser(TopLevelMemberDeclarationParser).Trace("TopLevelMemberDeclaration")
-            from endOfFileToken in EndOfFileTokenParser
+            from members in SyntaxListParser(TypeDeclarationParser).Trace("TypeDeclaration")
+            from endOfFileToken in EndOfFileTokenParser.Trace("EndOfFileToken")
             select SyntaxFactory.CompilationUnit(@namespace.FirstOrDefault(), usings, members, endOfFileToken);
-
+        
         public static Parser<NamespaceDeclarationSyntax> NamespaceDeclarationParser =>
-            from namespaceKeyword in NamespaceKeywordParser
+            from namespaceKeyword in NamespaceKeywordParser.Trace("NamespaceKeyword")
             from name in NameParser.Trace("Name")
             select SyntaxFactory.NamespaceDeclaration(namespaceKeyword, name);
-
+        
         public static Parser<OpenDirectiveSyntax> OpenDirectiveParser =>
-            from openKeyword in OpenKeywordParser
+            from openKeyword in OpenKeywordParser.Trace("OpenKeyword")
             from name in NameParser.Trace("Name")
             select SyntaxFactory.OpenDirective(openKeyword, name);
-
+        
         public static Parser<TraitDeclarationSyntax> TraitDeclarationParser =>
-            from traitKeyword in TraitKeywordParser
+            from traitKeyword in TraitKeywordParser.Trace("TraitKeyword")
             from name in SimpleNameParser.Trace("SimpleName")
-            from openBracketToken in OpenBracketTokenParser
-            from members in SyntaxListParser(BaseMemberDeclarationParser).Trace("BaseMemberDeclaration")
-            from closeBracketToken in CloseBracketTokenParser
-            select SyntaxFactory.TraitDeclaration(traitKeyword, name, openBracketToken, members, closeBracketToken);
-
+            from body in MemberBodyParser.ZeroOrOne().Trace("MemberBody")
+            select SyntaxFactory.TraitDeclaration(traitKeyword, name, body.FirstOrDefault());
+        
         public static Parser<ObjectDeclarationSyntax> ObjectDeclarationParser =>
-            from objectKeyword in ObjectKeywordParser
+            from objectKeyword in ObjectKeywordParser.Trace("ObjectKeyword")
             from name in SimpleNameParser.Trace("SimpleName")
-            from openBracketToken in OpenBracketTokenParser
-            from members in SyntaxListParser(BaseMemberDeclarationParser).Trace("BaseMemberDeclaration")
-            from closeBracketToken in CloseBracketTokenParser
-            select SyntaxFactory.ObjectDeclaration(objectKeyword, name, openBracketToken, members, closeBracketToken);
-
+            from body in MemberBodyParser.ZeroOrOne().Trace("MemberBody")
+            select SyntaxFactory.ObjectDeclaration(objectKeyword, name, body.FirstOrDefault());
+        
         public static Parser<ClassDeclarationSyntax> ClassDeclarationParser =>
-            from caseKeyword in CaseKeywordParser.OrElse(NoneParser)
-            from classKeyword in ClassKeywordParser
+            from caseKeyword in CaseKeywordParser.OrElse(NoneParser).Trace("CaseKeyword")
+            from classKeyword in ClassKeywordParser.Trace("ClassKeyword")
             from name in SimpleNameParser.Trace("SimpleName")
-            from openBracketToken in OpenBracketTokenParser
-            from members in SyntaxListParser(BaseMemberDeclarationParser).Trace("BaseMemberDeclaration")
-            from closeBracketToken in CloseBracketTokenParser
-            select SyntaxFactory.ClassDeclaration(caseKeyword, classKeyword, name, openBracketToken, members, closeBracketToken);
+            from arguments in ParameterListParser.ZeroOrOne().Trace("ParameterList")
+            from body in MemberBodyParser.ZeroOrOne().Trace("MemberBody")
+            select SyntaxFactory.ClassDeclaration(caseKeyword, classKeyword, name, arguments.FirstOrDefault(), body.FirstOrDefault());
+        
+        public static Parser<MemberBodySyntax> MemberBodyParser =>
+            from openBracketToken in OpenBracketTokenParser.Trace("OpenBracketToken")
+            from members in SyntaxListParser(MemberDeclarationParser).Trace("MemberDeclaration")
+            from closeBracketToken in CloseBracketTokenParser.Trace("CloseBracketToken")
+            select SyntaxFactory.MemberBody(openBracketToken, members, closeBracketToken);
+        
+        public static Parser<ParameterListSyntax> ParameterListParser =>
+            from openParenToken in OpenParenTokenParser.Trace("OpenParenToken")
+            from parameters in SeparatedSyntaxListParser(ParameterParser.Trace("Parameter"))
+            from closeParenToken in CloseParenTokenParser.Trace("CloseParenToken")
+            select SyntaxFactory.ParameterList(openParenToken, parameters, closeParenToken);
+        
+        public static Parser<ParameterSyntax> ParameterParser =>
+            from identifier in IdentifierTokenParser.Trace("IdentifierToken")
+            from typeAnnotation in TypeAnnotationParser.Trace("TypeAnnotation")
+            select SyntaxFactory.Parameter(identifier, typeAnnotation);
+        
+        public static Parser<TypeAnnotationSyntax> TypeAnnotationParser =>
+            from colonToken in ColonTokenParser.Trace("ColonToken")
+            from type in TypeParser.Trace("Type")
+            select SyntaxFactory.TypeAnnotation(colonToken, type);
+        
+        public static Parser<MethodDeclarationSyntax> MethodDeclarationParser =>
+            from defKeyword in DefKeywordParser.Trace("DefKeyword")
+            from name in SimpleNameParser.Trace("SimpleName")
+            from arguments in ParameterListParser.ZeroOrOne().Trace("ParameterList")
+            from returnType in TypeAnnotationParser.ZeroOrOne().Trace("TypeAnnotation")
+            from assignment in AssignmentParser.ZeroOrOne().Trace("Assignment")
+            select SyntaxFactory.MethodDeclaration(defKeyword, name, arguments.FirstOrDefault(), returnType.FirstOrDefault(), assignment.FirstOrDefault());
+        
+        public static Parser<AssignmentSyntax> AssignmentParser =>
+            from equalsToken in EqualsTokenParser.Trace("EqualsToken")
+            from expression in ExpressionParser.Trace("Expression")
+            select SyntaxFactory.Assignment(equalsToken, expression);
+        
+        public static Parser<BlockSyntax> BlockParser =>
+            from openBracketToken in OpenBracketTokenParser.Trace("OpenBracketToken")
+            from members in SyntaxListParser(MemberDeclarationParser).Trace("MemberDeclaration")
+            from closeBracketToken in CloseBracketTokenParser.Trace("CloseBracketToken")
+            select SyntaxFactory.Block(openBracketToken, members, closeBracketToken);
     }
 }

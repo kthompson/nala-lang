@@ -83,7 +83,7 @@ namespace NalaSyntaxGenerator
 
         protected void WriteWithSeperator<T>(string seperator, IEnumerable<T> enumerable, Action<T> action)
         {
-            WriteWithSeperator(() => Write(seperator), enumerable, action);
+            WriteWithSeperator(enumerable, () => Write(seperator), action);
         }
 
         protected void WriteWithSeperator<T>(IEnumerable<T> enumerable, Action<T> action)
@@ -96,12 +96,12 @@ namespace NalaSyntaxGenerator
             WriteWithLineSeperator(",", enumerable, action);
         }
 
-        protected void WriteWithLineSeperator<T>(string seperator, IEnumerable<T> enumerable, Action<T> action)
+        protected void WriteWithLineSeperator<T>(string seperator, IEnumerable<T> enumerable, Action<T> action, Action done = null)
         {
-            WriteWithSeperator(() => WriteLine(seperator), enumerable, action, WriteLine);
+            WriteWithSeperator(enumerable, () => WriteLine(seperator), action, done ?? WriteLine);
         }
 
-        protected void WriteWithSeperator<T>(Action seperator, IEnumerable<T> enumerable, Action<T> action, Action done = null)
+        protected void WriteWithSeperator<T>(IEnumerable<T> enumerable, Action seperator, Action<T> action, Action done = null)
         {
             using (var enumerator = enumerable.GetEnumerator())
             {
@@ -155,16 +155,22 @@ namespace NalaSyntaxGenerator
             return field.Type != "SyntaxToken" && !IsAnyList(field.Type) && !IsOverride(field) && !IsNew(field);
         }
 
-        protected static string GetFieldType(Field field, bool green)
+        protected static string GetFieldType(Field field)
         {
             if (IsAnyList(field.Type))
             {
-                return green
-                    ? "GreenNode"
-                    : "SyntaxNode";
+                return "SyntaxNode";
             }
 
             return field.Type;
+        }
+
+
+        protected static string GetInnerType(string type)
+        {
+            var listLength = type.IndexOf("<", StringComparison.Ordinal);
+            var innerType = type.Substring(listLength + 1, type.Length - listLength - 2);
+            return innerType;
         }
 
         protected bool IsDerivedOrListOfDerived(string baseType, string derivedType)

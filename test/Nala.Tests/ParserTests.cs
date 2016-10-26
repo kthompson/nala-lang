@@ -33,6 +33,52 @@ object HelloWorld {
         }
 
         [Fact]
+        public void MethodDeclarationTest()
+        {
+            var contents = @"
+object HelloWorld {
+  def main(args: Array): Unit = {    
+  }
+}";
+
+            var result = NalaParser.CompilationUnitParser.Run(contents);
+            Assert.NotNull(result);
+            var rcus = Assert.IsType<Success<CompilationUnitSyntax>>(result);
+            var cus = rcus.Result;
+            Assert.NotNull(cus);
+
+            Assert.Collection(cus.Members, syntax =>
+            {
+                var obj = Assert.IsType<ObjectDeclarationSyntax>(syntax);
+            });
+        }
+
+        [Fact]
+        public void TraitMethodDeclarationTest()
+        {
+            var contents = @"
+trait HelloWorld {
+  def main(args: Array[String])
+}";
+
+            var result = NalaParser.CompilationUnitParser.Run(contents);
+            Assert.NotNull(result);
+            var rcus = Assert.IsType<Success<CompilationUnitSyntax>>(result);
+            var cus = rcus.Result;
+            Assert.NotNull(cus);
+
+            Assert.Collection(cus.Members, syntax =>
+            {
+                var obj = Assert.IsType<TraitDeclarationSyntax>(syntax);
+                Assert.NotNull(obj.Body);
+                Assert.Collection(obj.Body.Members, declarationSyntax =>
+                {
+                    var method = Assert.IsType<MethodDeclarationSyntax>(declarationSyntax);
+                });
+            });
+        }
+
+        [Fact]
         public void QualifiedNamespace()
         {
             var contents = @"
@@ -40,7 +86,6 @@ namespace com.theautomaters
 
 object HelloWorld {
   def main(args: Array[String]): Unit = {
-    println(""Hello, world!"")
   }
 }";
 
@@ -95,6 +140,24 @@ object HelloWorld {
         }
 
         [Fact]
+        public void CaseClasses1()
+        {
+            var contents = @"case class TestCaseClass(a: Int, b: String)";
+
+            var result = NalaParser.CompilationUnitParser.Run(contents);
+            Assert.NotNull(result);
+            var rcus = Assert.IsType<Success<CompilationUnitSyntax>>(result);
+            var cus = rcus.Result;
+            Assert.NotNull(cus);
+            Assert.Collection(cus.Members, member =>
+            {
+                var klass = Assert.IsType<ClassDeclarationSyntax>(member);
+                Assert.NotNull(klass.Name);
+                Assert.Equal("TestCaseClass", klass.Name.GetValueText());
+            });
+        }
+
+        [Fact]
         public void Objects()
         {
             var contents = @"object TestObject {
@@ -105,6 +168,12 @@ object HelloWorld {
             var rcus = Assert.IsType<Success<CompilationUnitSyntax>>(result);
             var cus = rcus.Result;
             Assert.NotNull(cus);
+            Assert.Collection(cus.Members, member =>
+            {
+                var klass = Assert.IsType<ObjectDeclarationSyntax>(member);
+                Assert.NotNull(klass.Name);
+                Assert.Equal("TestObject", klass.Name.GetValueText());
+            });
         }
 
         [Fact]
@@ -118,6 +187,13 @@ object HelloWorld {
             var rcus = Assert.IsType<Success<CompilationUnitSyntax>>(result);
             var cus = rcus.Result;
             Assert.NotNull(cus);
+
+            Assert.Collection(cus.Members, member =>
+            {
+                var klass = Assert.IsType<TraitDeclarationSyntax>(member);
+                Assert.NotNull(klass.Name);
+                Assert.Equal("TestTrait", klass.Name.GetValueText());
+            });
         }
     }
 }

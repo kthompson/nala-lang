@@ -48,10 +48,7 @@ namespace Nala
             return this.Value;
         }
 
-        public virtual string ValueText
-        {
-            get { return this.Text; }
-        }
+        public virtual string ValueText => this.Text;
 
         public override string GetValueText()
         {
@@ -62,23 +59,6 @@ namespace Nala
         {
             throw new InvalidOperationException("This program location is thought to be unreachable."); ;
         }
-
-        /// <summary>
-        /// Determines whether two <see cref="SyntaxToken"/>s are equal.
-        /// </summary>
-        public static bool operator ==(SyntaxToken left, SyntaxToken right)
-        {
-            return left.Equals(right);
-        }
-
-        /// <summary>
-        /// Determines whether two <see cref="SyntaxToken"/>s are unequal.
-        /// </summary>
-        public static bool operator !=(SyntaxToken left, SyntaxToken right)
-        {
-            return !left.Equals(right);
-        }
-        
 
         public override TResult Accept<TResult>(SyntaxVisitor<TResult> visitor)
         {

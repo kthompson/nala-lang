@@ -37,13 +37,13 @@ namespace Nala
              */
         }
 
-        public static Parser<SyntaxToken> NoneParser => new SyntaxToken(SyntaxKind.None).Return();
+        public static Parser<SyntaxToken> NoneParser => default(SyntaxToken).Return();
 
-        public Parser<SeparatedSyntaxList<TNode>> SeparatedSyntaxListParser<TNode>() where TNode : SyntaxNode
-        {
-            throw new NotImplementedException();
-        }
-        
+        public static Parser<SeparatedSyntaxList<TNode>> SeparatedSyntaxListParser<TNode>(Parser<TNode> parser)
+            where TNode : SyntaxNode =>
+            from p in parser.SepBy(CommaTokenParser)
+            select new SeparatedSyntaxList<TNode>(SyntaxList.List(p.ToList()));
+
         public static Parser<SyntaxList<SyntaxTrivia>> SyntaxTriviaParser
         {
             get

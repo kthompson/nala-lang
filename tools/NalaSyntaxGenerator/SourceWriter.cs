@@ -44,16 +44,16 @@ namespace NalaSyntaxGenerator
             WriteLine();
 
             WriteLine("namespace Nala");
-            WriteLine("{");
+            OpenBlock();
 
-            WriteLine("    public partial class NalaParser");
-            WriteLine("    {");
+            WriteLine("public partial class NalaParser");
+            OpenBlock();
 
             this.WriteTokenParserTypes();
             this.WriteAbstractParserTypes();
             this.WriteParserTypes();
-            WriteLine("    }");
-            WriteLine("}");
+            CloseBlock();
+            CloseBlock();
         }
 
         private string ToStringLiteral(string value)
@@ -66,18 +66,18 @@ namespace NalaSyntaxGenerator
             var tokens = Tree.Tokens;
             foreach (var token in tokens)
             {
-                WriteLine("        public static Parser<SyntaxToken> {0}Parser =>", token.Name);
-                WriteLine("            from _ in SyntaxTriviaParser");
+                WriteLine("public static Parser<SyntaxToken> {0}Parser =>", token.Name);
+                WriteLine("    from _ in SyntaxTriviaParser");
                 if (token.Content.Length == 1)
                 {
-                    WriteLine("            from s in Char(\'{0}\')", ToStringLiteral(token.Content));
+                    WriteLine("    from s in Char(\'{0}\')", ToStringLiteral(token.Content));
                 }
                 else
                 {
-                    WriteLine("            from s in String(\"{0}\")", ToStringLiteral(token.Content));
+                    WriteLine("    from s in String(\"{0}\")", ToStringLiteral(token.Content));
                 }
-                WriteLine("            from __ in SyntaxTriviaParser");
-                WriteLine("            select new SyntaxToken(SyntaxKind.{0});", token.Name);
+                WriteLine("    from __ in SyntaxTriviaParser");
+                WriteLine("    select new SyntaxToken(SyntaxKind.{0});", token.Name);
                 WriteLine();
             }
         }
@@ -98,25 +98,43 @@ namespace NalaSyntaxGenerator
 
         private void WriteAbstractParserType(AbstractNode node, List<TreeType> concreteNodes)
         {
+            var strippedName = StripPost(node.Name, "Syntax");
             if (concreteNodes.Count == 1)
             {
-                WriteLine("        public static Parser<{0}> {1}Parser =>", node.Name, StripPost(node.Name, "Syntax"));
+                WriteLine("public static Parser<{0}> {1}Parser =>", node.Name, strippedName);
                 var name = StripPost(concreteNodes[0].Name, "Syntax");
                 var camelCase = CamelCase(name);
-                WriteLine("            from {0} in {1}Parser", camelCase, name);
-                WriteLine("            select ({0}){1};", node.Name, camelCase);
-                
+                WriteLine("    from {0} in {1}Parser", camelCase, name);
+                WriteLine("    select ({0}){1};", node.Name, camelCase);
+                return;
             }
-            else
+
+            WriteLine("public static IEnumerable<Parser<{0}>> {1}Parsers", node.Name, strippedName);
+            OpenBlock();
+            WriteLine("get");
+            OpenBlock();
+
+            if (concreteNodes.Count == 0)
             {
-                WriteLine("        public static Parser<{0}> {1}Parser =>", node.Name, StripPost(node.Name, "Syntax"));
-                WriteLine("            new Parser<{0}>[] {{ ", node.Name);
-                WriteWithLineSeperator(concreteNodes, concreteNode =>
-                {
-                    Write("                {0}Parser.Select(x => ({1})x).Trace(\"{0}\")", StripPost(concreteNode.Name, "Syntax"), node.Name);
-                });
-                WriteLine("           }.Choice();");
+                WriteLine("yield break;");
             }
+
+            foreach (var concreteNode in concreteNodes)
+            {
+                Write("yield return {0}Parser.Select(x => ({1})x)", StripPost(concreteNode.Name, "Syntax"), node.Name);
+
+                if (TraceParsers)
+                    Write(".Trace(\"{0}\")", StripPost(concreteNode.Name, "Syntax"));
+
+                WriteLine(";");
+            }
+
+            CloseBlock();
+            CloseBlock();
+
+            WriteLine();
+            WriteLine("public static Parser<{0}> {1}Parser =>", node.Name, strippedName);
+            WriteLine("    {0}Parsers.Choice();", strippedName);
         }
 
         private void WriteParserTypes()
@@ -141,45 +159,47 @@ namespace NalaSyntaxGenerator
                 kindField = null;
             }
 
-            WriteLine("        public static Parser<{0}> {1}Parser =>", node.Name, StripPost(node.Name, "Syntax"));
+            WriteLine("public static Parser<{0}> {1}Parser =>", node.Name, StripPost(node.Name, "Syntax"));
             foreach (var field in node.Fields)
             {
                 if (field.Type == "SyntaxToken")
                 {
+                    var firstKind = field.Kinds.First();
                     switch (field.Kinds.Count)
                     {
                         case 1:
-                            Write("            from {0} in {1}Parser", CamelCase(field.Name), field.Kinds.First().Name);
+                            Write("    from {0} in {1}Parser", CamelCase(field.Name), firstKind.Name);
                             if (IsOptional(field))
                             {
                                 Write(".OrElse(NoneParser)");
                             }
+                            if (TraceParsers)
+                                Write(".Trace(\"{0}\")", firstKind.Name);
                             break;
                         case 2:
-                            var firstKind = field.Kinds.First();
                             var secondKind = field.Kinds.Skip(1).First();
 
                             if (multiKind && field == kindField)
                             {
-                                WriteLine("            from {0} in Parser.OrElse(", CamelCase(field.Name));
-                                WriteLine("                {0}Parser.Select(token => new {{token, kind=SyntaxKind.{1}}}),", firstKind.Name, firstKind.ParentKind);
-                                WriteLine("                {0}Parser.Select(token => new {{token, kind=SyntaxKind.{1}}})", secondKind.Name, secondKind.ParentKind);
-                                Write("                )");
+                                WriteLine("    from {0} in Parser.OrElse(", CamelCase(field.Name));
+                                WriteLine("        {0}Parser.Select(token => new {{token, kind=SyntaxKind.{1}}}),", firstKind.Name, firstKind.ParentKind);
+                                WriteLine("        {0}Parser.Select(token => new {{token, kind=SyntaxKind.{1}}})", secondKind.Name, secondKind.ParentKind);
+                                Write("        )");
                             }
                             else
                             {
-                                Write("            from {0} in {1}Parser.OrElse({2}Parser)", CamelCase(field.Name),
+                                Write("    from {0} in {1}Parser.OrElse({2}Parser)", CamelCase(field.Name),
                                     firstKind.Name,
                                     secondKind.Name);
                             }
                             break;
                         default:
-                            Write("            from {0} in new [] {{", CamelCase(field.Name));
+                            Write("    from {0} in new [] {{", CamelCase(field.Name));
                             if (multiKind && field == kindField)
                             {
                                 WriteWithSeperator(field.Kinds, kind =>
                                 {
-                                    Write("                {0}Parser.Select(token => new {{token, kind = SyntaxKind.{1}}})",
+                                    Write("        {0}Parser.Select(token => new {{token, kind = SyntaxKind.{1}}})",
                                         kind.Name, kind.ParentKind);
                                 });
                             }
@@ -192,7 +212,7 @@ namespace NalaSyntaxGenerator
                                         Write(".Trace(\"{0}\")", kind.Name);
                                 });
                             }
-                            Write("            }.Choice()");
+                            Write("    }.Choice()");
                             break;
                     }
                 }
@@ -201,23 +221,27 @@ namespace NalaSyntaxGenerator
                     var innerType = GetInnerType(field.Type);
                     if (innerType == "SyntaxToken")
                     {
-                        Write("            from {0} in SyntaxTokenListParser", CamelCase(field.Name));
+                        Write("    from {0} in SyntaxTokenListParser", CamelCase(field.Name));
                     }
                     else
                     {
-                        Write("            from {0} in SyntaxListParser({1}Parser)", CamelCase(field.Name), StripPost(innerType, "Syntax"));
+                        Write("    from {0} in SyntaxListParser({1}Parser)", CamelCase(field.Name), StripPost(innerType, "Syntax"));
                         if(TraceParsers)
                             Write(".Trace(\"{0}\")", StripPost(innerType, "Syntax"));
                     }
                 }
                 else if (IsSeparatedNodeList(field.Type))
                 {
-                    Write("            from {0} in SeparatedSyntaxListParser<{1}>()", CamelCase(field.Name),
-                        GetInnerType(field.Type));
+
+                    var innerType = GetInnerType(field.Type);
+                    Write("    from {0} in SeparatedSyntaxListParser({1}Parser", CamelCase(field.Name), StripPost(innerType, "Syntax"));
+                    if (TraceParsers)
+                        Write(".Trace(\"{0}\")", StripPost(innerType, "Syntax"));
+                    Write(")");
                 }
                 else
                 {
-                    Write("            from {0} in {1}Parser{2}", CamelCase(field.Name),
+                    Write("    from {0} in {1}Parser{2}", CamelCase(field.Name),
                         StripPost(field.Type, "Syntax"), field.Optional == "true" ? ".ZeroOrOne()" : "");
 
                     if (TraceParsers)
@@ -227,7 +251,7 @@ namespace NalaSyntaxGenerator
                 WriteLine(field.TriviaType);
             }
 
-            Write("            select SyntaxFactory.{0}(", StripPost(node.Name, "Syntax"));
+            Write("    select SyntaxFactory.{0}(", StripPost(node.Name, "Syntax"));
             if (multiKind)
             {
                 Write("{0}.kind, ", CamelCase(kindField.Name));
@@ -246,22 +270,13 @@ namespace NalaSyntaxGenerator
             WriteLine(");");
         }
 
-
-
-        private static string GetInnerType(string type)
-        {
-            var listLength = type.IndexOf("<", StringComparison.Ordinal);
-            var innerType = type.Substring(listLength + 1, type.Length - listLength - 2);
-            return innerType;
-        }
-
         private void WriteSyntax()
         {
             WriteFileHeader();
 
             WriteLine();
             WriteLine("namespace Nala.Syntax");
-            WriteLine("{");
+            OpenBlock();
             WriteLine();
             this.WriteRedTypes();
             WriteLine("}");
@@ -273,13 +288,13 @@ namespace NalaSyntaxGenerator
 
             WriteLine();
             WriteLine("namespace Nala");
-            WriteLine("{");
-            WriteLine("    using Nala.Syntax;");
+            OpenBlock();
+            WriteLine("using Nala.Syntax;");
             WriteLine();
             this.WriteRedVisitors();
             this.WriteRedRewriter();
             this.WriteRedFactories();
-            WriteLine("}");
+            CloseBlock();
         }
 
         private void WriteGreenNodeConstructorArgs(List<Field> nodeFields, List<Field> valueFields)
@@ -287,7 +302,7 @@ namespace NalaSyntaxGenerator
             for (int i = 0, n = nodeFields.Count; i < n; i++)
             {
                 var field = nodeFields[i];
-                string type = GetFieldType(field, green: false);
+                string type = GetFieldType(field);
                 
                 Write(", {0} {1}", type, CamelCase(field.Name));
             }
@@ -302,17 +317,17 @@ namespace NalaSyntaxGenerator
         private void WriteCtorBody(List<Field> valueFields, List<Field> nodeFields)
         {
             // constructor body
-            WriteLine("        this.SlotCount = {0};", nodeFields.Count);
+            WriteLine("this.SlotCount = {0};", nodeFields.Count);
             for (int i = 0, n = nodeFields.Count; i < n; i++)
             {
                 var field = nodeFields[i];
-                WriteLine("        this.{0} = {0};", CamelCase(field.Name));
+                WriteLine("this.{0} = {0};", CamelCase(field.Name));
             }
 
             for (int i = 0, n = valueFields.Count; i < n; i++)
             {
                 var field = valueFields[i];
-                WriteLine("        this.{0} = {0};", CamelCase(field.Name));
+                WriteLine("this.{0} = {0};", CamelCase(field.Name));
             }
         }
         
@@ -366,21 +381,21 @@ namespace NalaSyntaxGenerator
 
         private void WriteRedType(TreeType node)
         {
-            WriteComment(node.TypeComment, "  ");
+            WriteComment(node.TypeComment, "");
 
             if (node is AbstractNode)
             {
                 AbstractNode nd = (AbstractNode)node;
-                WriteLine("  public abstract partial class {0} : {1}", node.Name, node.Base);
-                WriteLine("  {");
-                WriteLine("    internal {0}(SyntaxKind kind)", node.Name);
-                WriteLine("      : base(kind)");
-                WriteLine("    {");
+                WriteLine("public abstract partial class {0} : {1}", node.Name, node.Base);
+                OpenBlock();
+                WriteLine("internal {0}(SyntaxKind kind)", node.Name);
+                WriteLine("    : base(kind)");
+                OpenBlock();
                 if (node.Name == "DirectiveTriviaSyntax")
                 {
-                    WriteLine("      this.flags |= NodeFlags.ContainsDirectives;");
+                    WriteLine("this.flags |= NodeFlags.ContainsDirectives;");
                 }
-                WriteLine("    }");
+                CloseBlock();
 
                 var valueFields = nd.Fields.Where(n => !IsNodeOrNodeList(n.Type)).ToList();
                 var nodeFields = nd.Fields.Where(n => IsNodeOrNodeList(n.Type)).ToList();
@@ -393,8 +408,8 @@ namespace NalaSyntaxGenerator
                         //red SyntaxLists can't contain tokens, so we switch to SyntaxTokenList
                         var fieldType = field.Type == "SyntaxList<SyntaxToken>" ? "SyntaxTokenList" : field.Type;
                         WriteLine();
-                        WriteComment(field.PropertyComment, "    ");
-                        WriteLine("    {0} abstract {1}{2} {3} {{ get; }}", "public", (IsNew(field) ? "new " : ""), fieldType, field.Name);
+                        WriteComment(field.PropertyComment, "");
+                        WriteLine("{0} abstract {1}{2} {3} {{ get; }}", "public", (IsNew(field) ? "new " : ""), fieldType, field.Name);
                     }
                 }
 
@@ -402,17 +417,17 @@ namespace NalaSyntaxGenerator
                 {
                     var field = valueFields[i];
                     WriteLine();
-                    WriteComment(field.PropertyComment, "    ");
-                    WriteLine("    {0} abstract {1}{2} {3} {{ get; }}", "public", (IsNew(field) ? "new " : ""), field.Type, field.Name);
+                    WriteComment(field.PropertyComment, "");
+                    WriteLine("{0} abstract {1}{2} {3} {{ get; }}", "public", (IsNew(field) ? "new " : ""), field.Type, field.Name);
                 }
 
-                WriteLine("  }");
+                CloseBlock();
             }
             else if (node is Node)
             {
                 Node nd = (Node)node;
-                WriteLine("  public sealed partial class {0} : {1}", node.Name, node.Base);
-                WriteLine("  {");
+                WriteLine("public sealed partial class {0} : {1}", node.Name, node.Base);
+                OpenBlock();
 
                 var valueFields = nd.Fields.Where(n => !IsNodeOrNodeList(n.Type)).ToList();
                 var nodeFields = nd.Fields.Where(n => IsNodeOrNodeList(n.Type)).ToList();
@@ -420,27 +435,27 @@ namespace NalaSyntaxGenerator
                 for (int i = 0, n = nodeFields.Count; i < n; i++)
                 {
                     var field = nodeFields[i];
-                    var type = GetFieldType(field, green: false);
-                    WriteLine("    private readonly {0} {1};", type, CamelCase(field.Name));
+                    var type = GetFieldType(field);
+                    WriteLine("private readonly {0} {1};", type, CamelCase(field.Name));
                 }
 
                 for (int i = 0, n = valueFields.Count; i < n; i++)
                 {
                     var field = valueFields[i];
-                    WriteLine("    private readonly {0} {1};", field.Type, CamelCase(field.Name));
+                    WriteLine("private readonly {0} {1};", field.Type, CamelCase(field.Name));
                 }
 
                 // write constructor
                 WriteLine();
-                Write("    internal {0}(SyntaxKind kind", node.Name);
+                Write("internal {0}(SyntaxKind kind", node.Name);
 
                 WriteGreenNodeConstructorArgs(nodeFields, valueFields);
 
                 WriteLine(")");
-                WriteLine("        : base(kind)");
-                WriteLine("    {");
+                WriteLine("    : base(kind)");
+                OpenBlock();
                 WriteCtorBody(valueFields, nodeFields);
-                WriteLine("    }");
+                CloseBlock();
                 WriteLine();
 
                 // property accessors
@@ -449,56 +464,56 @@ namespace NalaSyntaxGenerator
                     var field = nodeFields[i];
                     if (field.Type == "SyntaxToken")
                     {
-                        WriteComment(field.PropertyComment, "    ");
-                        WriteLine("    {0} {1}{2} {3} ", "public", OverrideOrNewModifier(field), field.Type, field.Name);
-                        WriteLine("    {");
+                        WriteComment(field.PropertyComment, "");
+                        WriteLine("{0} {1}{2} {3} ", "public", OverrideOrNewModifier(field), field.Type, field.Name);
+                        OpenBlock();
                         if (IsOptional(field))
                         {
-                            WriteLine("        get");
-                            WriteLine("        {");
-                            WriteLine("            return this.{0};", CamelCase(field.Name));
-                            WriteLine("        }");
+                            WriteLine("get");
+                            OpenBlock();
+                            WriteLine("return this.{0};", CamelCase(field.Name));
+                            CloseBlock();
                         }
                         else
                         {
-                            WriteLine("      get {{ return this.{0}; }}", CamelCase(field.Name));
+                            WriteLine("get {{ return this.{0}; }}", CamelCase(field.Name));
                         }
-                        WriteLine("    }");
+                        CloseBlock();
                     }
                     else if (field.Type == "SyntaxList<SyntaxToken>")
                     {
-                        WriteComment(field.PropertyComment, "    ");
-                        WriteLine("    {0} {1}SyntaxTokenList {2} ", "public", OverrideOrNewModifier(field), field.Name);
-                        WriteLine("    {");
-                        WriteLine("        get");
-                        WriteLine("        {");
-                        WriteLine("            var slot = this.{0};", CamelCase(field.Name));
-                        WriteLine("            if (slot != null)");
-                        WriteLine("                return new SyntaxTokenList(this, slot);");
+                        WriteComment(field.PropertyComment, "");
+                        WriteLine("{0} {1}SyntaxTokenList {2} ", "public", OverrideOrNewModifier(field), field.Name);
+                        OpenBlock();
+                        WriteLine("get");
+                        OpenBlock();
+                        WriteLine("var slot = this.{0};", CamelCase(field.Name));
+                        WriteLine("if (slot != null)");
+                        WriteLine("    return new SyntaxTokenList(this, slot);");
                         WriteLine();
-                        WriteLine("            return default(SyntaxTokenList);");
-                        WriteLine("        }");
-                        WriteLine("    }");
+                        WriteLine("return default(SyntaxTokenList);");
+                        CloseBlock();
+                        CloseBlock();
                     }
                     else
                     {
-                        WriteComment(field.PropertyComment, "    ");
-                        WriteLine("    {0} {1}{2} {3} ", "public", OverrideOrNewModifier(field), field.Type, field.Name);
-                        WriteLine("    {");
-                        WriteLine("        get");
-                        WriteLine("        {");
+                        WriteComment(field.PropertyComment, "");
+                        WriteLine("{0} {1}{2} {3} ", "public", OverrideOrNewModifier(field), field.Type, field.Name);
+                        OpenBlock();
+                        WriteLine("get");
+                        OpenBlock();
 
                         if (IsNodeList(field.Type))
                         {
-                            WriteLine("            return new {0}(this.{1});", field.Type, CamelCase(field.Name));
+                            WriteLine("return new {0}(this.{1});", field.Type, CamelCase(field.Name));
                         }
                         else if (IsSeparatedNodeList(field.Type))
                         {
-                            WriteLine("            var red = this.{0};", CamelCase(field.Name));
-                            WriteLine("            if (red != null)", i);
-                            WriteLine("                return new {0}(red);", field.Type);
+                            WriteLine("var red = this.{0};", CamelCase(field.Name));
+                            WriteLine("if (red != null)", i);
+                            WriteLine("    return new {0}(red);", field.Type);
                             WriteLine();
-                            WriteLine("            return default({0});", field.Type);
+                            WriteLine("return default({0});", field.Type);
                         }
                         else if (field.Type == "SyntaxNodeOrTokenList")
                         {
@@ -506,17 +521,10 @@ namespace NalaSyntaxGenerator
                         }
                         else
                         {
-                            if (i == 0)
-                            {
-                                WriteLine("            return this.{0};", CamelCase(field.Name));
-                            }
-                            else
-                            {
-                                WriteLine("            return this.{0};", CamelCase(field.Name));
-                            }
+                            WriteLine("return this.{0};", CamelCase(field.Name));
                         }
-                        WriteLine("        }");
-                        WriteLine("    }");
+                        CloseBlock();
+                        CloseBlock();
                     }
                     WriteLine();
                 }
@@ -524,39 +532,87 @@ namespace NalaSyntaxGenerator
                 for (int i = 0, n = valueFields.Count; i < n; i++)
                 {
                     var field = valueFields[i];
-                    WriteComment(field.PropertyComment, "    ");
-                    WriteLine("    public {0}{1} {2} {{ get {{ return this.{3}; }} }}",
+                    WriteComment(field.PropertyComment, "");
+                    WriteLine("public {0}{1} {2} {{ get {{ return this.{3}; }} }}",
                         OverrideOrNewModifier(field), field.Type, field.Name, CamelCase(field.Name)
                         );
                 }
 
-                WriteLine("    internal override SyntaxNode GetSlot(int index)");
-                WriteLine("    {");
-                WriteLine("        switch (index)");
-                WriteLine("        {");
+                WriteLine("internal override SyntaxNode GetSlot(int index)");
+                OpenBlock();
+                WriteLine("switch (index)");
+                OpenBlock();
                 for (int i = 0, n = nodeFields.Count; i < n; i++)
                 {
                     var field = nodeFields[i];
 
                     if (field.Type != "SyntaxToken" && field.Type != "SyntaxList<SyntaxToken>")
                     {
-                        WriteLine("            case {0}: return this.{1};", i, CamelCase(field.Name));
+                        WriteLine("case {0}: return this.{1};", i, CamelCase(field.Name));
                     }
                 }
-                WriteLine("            default: return null;");
-                WriteLine("        }");
-                WriteLine("    }");
+                WriteLine("default: return null;");
+                CloseBlock();
+                CloseBlock();
 
                 this.WriteRedAcceptMethods(nd);
                 this.WriteRedUpdateMethod(nd);
                 // this.WriteRedWithMethod(nd);
                 this.WriteRedSetters(nd);
                 this.WriteRedListHelperMethods(nd);
+                this.WriteRedEqualityMethods(nd);
 
-                WriteLine("  }");
+                CloseBlock();
             }
         }
-        
+
+        private void WriteRedEqualityMethods(Node nd)
+        {
+            WriteLine();
+            WriteLine("private bool Equals({0} other)", nd.Name);
+            OpenBlock();
+            Write("return ");
+            WriteWithSeperator(nd.Fields, () =>
+            {
+                WriteLine(" &&");
+                Write("       ");
+            }, field =>
+            {
+                Write("Equals({0}, other.{0})", CamelCase(field.Name));
+            }, () => WriteLine(";"));
+            CloseBlock();
+            WriteLine();
+
+            WriteLine("public override bool Equals(object obj)");
+            OpenBlock();
+            WriteLine("if (ReferenceEquals(null, obj)) return false;");
+            WriteLine("if (ReferenceEquals(this, obj)) return true;");
+            WriteLine("return obj is {0} && Equals(({0})obj);", nd.Name);
+            CloseBlock();
+
+            WriteLine("public override int GetHashCode()");
+            OpenBlock();
+            WriteLine("unchecked");
+            OpenBlock();
+            Write("var hashCode = ");
+            WriteWithSeperator(nd.Fields, () =>
+            {
+                WriteLine(";");
+                Write("hashCode = (hashCode * 397) ^ ");
+            }, field =>
+            {
+                Write(IsOptional(field)
+                        ? "({0} != null ? {0}.GetHashCode() : 0)"
+                        : "{0}.GetHashCode()",
+                    CamelCase(field.Name));
+            }, () => WriteLine(";"));
+
+
+            WriteLine("return hashCode;");
+            CloseBlock();
+            CloseBlock();
+        }
+
         private void WriteRedAcceptMethods(Node node)
         {
             WriteRedAcceptMethod(node, false, true);
@@ -569,10 +625,10 @@ namespace NalaSyntaxGenerator
                 (genericResult && genericArgument) ? "<TArgument, TResult>" :
                 genericResult ? "<TResult>" : "";
             WriteLine();
-            WriteLine("    public override " + (genericResult ? "TResult" : "void") + " Accept" + genericArgs + "(SyntaxVisitor" + genericArgs + " visitor{0})", genericArgument ? ", TArgument argument" : "");
-            WriteLine("    {");
-            WriteLine("        " + (genericResult ? "return " : "") + "visitor.Visit{0}(this{1});", StripPost(node.Name, "Syntax"), genericArgument ? ", argument" : "");
-            WriteLine("    }");
+            WriteLine("public override " + (genericResult ? "TResult" : "void") + " Accept" + genericArgs + "(SyntaxVisitor" + genericArgs + " visitor{0})", genericArgument ? ", TArgument argument" : "");
+            OpenBlock();
+            WriteLine((genericResult ? "return " : "") + "visitor.Visit{0}(this{1});", StripPost(node.Name, "Syntax"), genericArgument ? ", argument" : "");
+            CloseBlock();
         }
 
         private void WriteRedVisitors()
@@ -589,8 +645,8 @@ namespace NalaSyntaxGenerator
             var nodes = Tree.Types.Where(n => !(n is PredefinedNode)).ToList();
 
             WriteLine();
-            WriteLine("  public partial class SyntaxVisitor" + genericArgs);
-            WriteLine("  {");
+            WriteLine("public partial class SyntaxVisitor" + genericArgs);
+            OpenBlock();
             int nWritten = 0;
             for (int i = 0, n = nodes.Count; i < n; i++)
             {
@@ -600,20 +656,20 @@ namespace NalaSyntaxGenerator
                     if (nWritten > 0)
                         WriteLine();
                     nWritten++;
-                    WriteComment(string.Format("<summary>Called when the visitor visits a {0} node.</summary>", node.Name), "    ");
-                    WriteLine("    public virtual " + (genericResult ? "TResult" : "void") + " Visit{0}({1} node{2})", StripPost(node.Name, "Syntax"), node.Name, genericArgument ? ", TArgument argument" : "");
-                    WriteLine("    {");
-                    WriteLine("      " + (genericResult ? "return " : "") + "this.DefaultVisit(node{0});", genericArgument ? ", argument" : "");
-                    WriteLine("    }");
+                    WriteComment(string.Format("<summary>Called when the visitor visits a {0} node.</summary>", node.Name),"");
+                    WriteLine("public virtual " + (genericResult ? "TResult" : "void") + " Visit{0}({1} node{2})", StripPost(node.Name, "Syntax"), node.Name, genericArgument ? ", TArgument argument" : "");
+                    OpenBlock();
+                    WriteLine((genericResult ? "return " : "") + "this.DefaultVisit(node{0});", genericArgument ? ", argument" : "");
+                    CloseBlock();
                 }
             }
-            WriteLine("  }");
+            CloseBlock();
         }
 
         private void WriteRedUpdateMethod(Node node)
         {
             WriteLine();
-            Write("    {0} {1} Update(", "public", node.Name);
+            Write("{0} {1} Update(", "public", node.Name);
 
             // parameters
             for (int f = 0; f < node.Fields.Count; f++)
@@ -625,9 +681,9 @@ namespace NalaSyntaxGenerator
                 Write("{0} {1}", type, CamelCase(field.Name));
             }
             WriteLine(")");
-            WriteLine("    {");
+            OpenBlock();
 
-            Write("        if (");
+            Write("if (");
             int nCompared = 0;
             for (int f = 0; f < node.Fields.Count; f++)
             {
@@ -643,8 +699,8 @@ namespace NalaSyntaxGenerator
             if (nCompared > 0)
             {
                 WriteLine(")");
-                WriteLine("        {");
-                Write("            return SyntaxFactory.{0}(", StripPost(node.Name, "Syntax"));
+                OpenBlock();
+                Write("return SyntaxFactory.{0}(", StripPost(node.Name, "Syntax"));
                 if (node.Kinds.Count > 1)
                 {
                     Write("this.Kind, ");
@@ -657,12 +713,12 @@ namespace NalaSyntaxGenerator
                     Write(CamelCase(field.Name));
                 }
                 WriteLine(");");
-                WriteLine("        }");
+                CloseBlock();
             }
 
             WriteLine();
-            WriteLine("        return this;");
-            WriteLine("    }");
+            WriteLine("return this;");
+            CloseBlock();
         }
         
         private void WriteRedSetters(Node node)
@@ -673,11 +729,11 @@ namespace NalaSyntaxGenerator
                 var type = this.GetRedPropertyType(field);
 
                 WriteLine();
-                WriteLine("    {0} {1} With{2}({3} {4})", "public", node.Name, StripPost(field.Name, "Opt"), type, CamelCase(field.Name));
-                WriteLine("    {");
+                WriteLine("{0} {1} With{2}({3} {4})", "public", node.Name, StripPost(field.Name, "Opt"), type, CamelCase(field.Name));
+                OpenBlock();
 
                 // call update inside each setter
-                Write("        return this.Update(");
+                Write("return this.Update(");
                 for (int f2 = 0; f2 < node.Fields.Count; f2++)
                 {
                     var field2 = node.Fields[f2];
@@ -695,7 +751,7 @@ namespace NalaSyntaxGenerator
                 }
                 WriteLine(");");
 
-                WriteLine("    }");
+                CloseBlock();
             }
         }
 
@@ -732,10 +788,10 @@ namespace NalaSyntaxGenerator
         {
             var argType = GetElementType(field.Type);
             WriteLine();
-            WriteLine("    public {0} Add{1}(params {2}[] items)", node.Name, field.Name, argType);
-            WriteLine("    {");
-            WriteLine("        return this.With{0}(this.{1}.AddRange(items));", StripPost(field.Name, "Opt"), field.Name);
-            WriteLine("    }");
+            WriteLine("public {0} Add{1}(params {2}[] items)", node.Name, field.Name, argType);
+            OpenBlock();
+            WriteLine("return this.With{0}(this.{1}.AddRange(items));", StripPost(field.Name, "Opt"), field.Name);
+            CloseBlock();
         }
 
         private void WriteRedNestedListHelperMethods(Node node, Field field, Node referencedNode, Field referencedNodeField)
@@ -745,7 +801,7 @@ namespace NalaSyntaxGenerator
             // AddBaseListTypes
             WriteLine();
             WriteLine("    public {0} Add{1}{2}(params {3}[] items)", node.Name, StripPost(field.Name, "Opt"), referencedNodeField.Name, argType);
-            WriteLine("    {");
+            OpenBlock();
 
             if (IsOptional(field))
             {
@@ -759,7 +815,7 @@ namespace NalaSyntaxGenerator
                 WriteLine("        return this.With{0}(this.{1}.With{2}(this.{1}.{3}.AddRange(items)));", StripPost(field.Name, "Opt"), field.Name, StripPost(referencedNodeField.Name, "Opt"), referencedNodeField.Name);
             }
 
-            WriteLine("    }");
+            CloseBlock();
         }
 
         private void WriteRedRewriter()
@@ -767,8 +823,8 @@ namespace NalaSyntaxGenerator
             var nodes = Tree.Types.Where(n => !(n is PredefinedNode)).ToList();
 
             WriteLine();
-            WriteLine("  public partial class SyntaxRewriter : SyntaxVisitor<SyntaxNode>");
-            WriteLine("  {");
+            WriteLine("public partial class SyntaxRewriter : SyntaxVisitor<SyntaxNode>");
+            OpenBlock();
             int nWritten = 0;
             for (int i = 0, n = nodes.Count; i < n; i++)
             {
@@ -780,27 +836,27 @@ namespace NalaSyntaxGenerator
                     if (nWritten > 0)
                         WriteLine();
                     nWritten++;
-                    WriteLine("    public override SyntaxNode Visit{0}({1} node)", StripPost(node.Name, "Syntax"), node.Name);
-                    WriteLine("    {");
+                    WriteLine("public override SyntaxNode Visit{0}({1} node)", StripPost(node.Name, "Syntax"), node.Name);
+                    OpenBlock();
                     for (int f = 0; f < nodeFields.Count; f++)
                     {
                         var field = nodeFields[f];
                         if (IsAnyList(field.Type))
                         {
-                            WriteLine("      var {0} = this.VisitList(node.{1});", CamelCase(field.Name), field.Name);
+                            WriteLine("var {0} = this.VisitList(node.{1});", CamelCase(field.Name), field.Name);
                         }
                         else if (field.Type == "SyntaxToken")
                         {
-                            WriteLine("      var {0} = this.VisitToken(node.{1});", CamelCase(field.Name), field.Name);
+                            WriteLine("var {0} = this.VisitToken(node.{1});", CamelCase(field.Name), field.Name);
                         }
                         else
                         {
-                            WriteLine("      var {0} = ({1})this.Visit(node.{2});", CamelCase(field.Name), field.Type, field.Name);
+                            WriteLine("var {0} = ({1})this.Visit(node.{2});", CamelCase(field.Name), field.Type, field.Name);
                         }
                     }
                     if (nodeFields.Count > 0)
                     {
-                        Write("      return node.Update(");
+                        Write("return node.Update(");
                         for (int f = 0; f < node.Fields.Count; f++)
                         {
                             var field = node.Fields[f];
@@ -819,20 +875,20 @@ namespace NalaSyntaxGenerator
                     }
                     else
                     {
-                        WriteLine("      return node;");
+                        WriteLine("return node;");
                     }
-                    WriteLine("    }");
+                    CloseBlock();
                 }
             }
-            WriteLine("  }");
+            CloseBlock();
         }
 
         private void WriteRedFactories()
         {
             var nodes = Tree.Types.Where(n => !(n is PredefinedNode) && !(n is AbstractNode)).OfType<Node>().ToList();
             WriteLine();
-            WriteLine("  public static partial class SyntaxFactory");
-            WriteLine("  {");
+            WriteLine("public static partial class SyntaxFactory");
+            OpenBlock();
 
             for (int i = 0, n = nodes.Count; i < n; i++)
             {
@@ -844,7 +900,7 @@ namespace NalaSyntaxGenerator
                 this.WriteKindConverters(node);
             }
 
-            WriteLine("  }");
+            CloseBlock();
         }
 
         protected bool CanBeAutoCreated(Node node, Field field)
@@ -920,27 +976,27 @@ namespace NalaSyntaxGenerator
             var valueFields = nd.Fields.Where(n => IsValueField(n)).ToList();
             var nodeFields = nd.Fields.Where(n => !IsValueField(n)).ToList();
 
-            WriteComment(string.Format("<summary>Creates a new {0} instance.</summary>", nd.Name), "    ");
+            WriteComment(string.Format("<summary>Creates a new {0} instance.</summary>", nd.Name), "");
 
-            Write("    {0} static {1} {2}(", "public", nd.Name, StripPost(nd.Name, "Syntax"));
+            Write("{0} static {1} {2}(", "public", nd.Name, StripPost(nd.Name, "Syntax"));
             WriteRedFactoryParameters(nd);
 
             WriteLine(")");
-            WriteLine("    {");
+            OpenBlock();
 
             // validate kinds
             if (nd.Kinds.Count > 1)
             {
-                WriteLine("      switch (kind)");
-                WriteLine("      {");
+                WriteLine("switch (kind)");
+                OpenBlock();
                 foreach (var kind in nd.Kinds)
                 {
-                    WriteLine("        case SyntaxKind.{0}:", kind.Name);
+                    WriteLine("case SyntaxKind.{0}:", kind.Name);
                 }
-                WriteLine("          break;");
-                WriteLine("        default:");
-                WriteLine("          throw new ArgumentException(\"kind\");");
-                WriteLine("      }");
+                WriteLine("    break;");
+                WriteLine("default:");
+                WriteLine("    throw new ArgumentException(\"kind\");");
+                CloseBlock();
             }
 
             // validate parameters
@@ -951,36 +1007,48 @@ namespace NalaSyntaxGenerator
 
                 if (field.Type == "SyntaxToken")
                 {
+                    if (IsOptional(field))
+                    {
+                        WriteLine("if ({0} != null)", CamelCase(field.Name));
+                        OpenBlock();
+                    }
+
                     if (field.Kinds != null && field.Kinds.Count > 0)
                     {
-                        WriteLine("      switch ({0}.Kind)", pname);
-                        WriteLine("      {");
+                        WriteLine("switch ({0}.Kind)", pname);
+                        OpenBlock();
                         foreach (var kind in field.Kinds)
                         {
-                            WriteLine("        case SyntaxKind.{0}:", kind.Name);
+                            WriteLine("case SyntaxKind.{0}:", kind.Name);
                         }
                         if (IsOptional(field))
                         {
-                            WriteLine("        case SyntaxKind.None:");
+                            WriteLine("case SyntaxKind.None:");
                         }
-                        WriteLine("          break;");
-                        WriteLine("        default:");
-                        WriteLine("          throw new ArgumentException(\"{0}\");", pname);
-                        WriteLine("      }");
+                        WriteLine("    break;");
+                        WriteLine("default:");
+                        WriteLine("    throw new ArgumentException(\"{0}\");", pname);
+                        CloseBlock();
+                    }
+
+                    if (IsOptional(field))
+                    {
+                        CloseBlock();
                     }
                 }
                 else if (!IsAnyList(field.Type) && !IsOptional(field))
                 {
-                    WriteLine("      if ({0} == null)", CamelCase(field.Name));
-                    WriteLine("        throw new ArgumentNullException(nameof({0}));", CamelCase(field.Name));
+                    WriteLine("if ({0} == null)", CamelCase(field.Name));
+                    WriteLine("    throw new ArgumentNullException(nameof({0}));", CamelCase(field.Name));
+                    WriteLine();
                 }
             }
 
-            Write("      return new {0}(", nd.Name);
+            Write("return new {0}(", nd.Name);
             WriteCtorArgList(nd, false, valueFields, nodeFields);
             WriteLine(");");
 
-            WriteLine("    }");
+            CloseBlock();
             this.WriteLine();
         }
 
@@ -1046,24 +1114,24 @@ namespace NalaSyntaxGenerator
                 if (field.Type == "SyntaxToken" && CanBeAutoCreated(nd, field) && field.Kinds.Count > 1)
                 {
                     WriteLine();
-                    WriteLine("    private static SyntaxKind Get{0}{1}Kind(SyntaxKind kind)", StripPost(nd.Name, "Syntax"), StripPost(field.Name, "Opt"));
-                    WriteLine("    {");
+                    WriteLine("private static SyntaxKind Get{0}{1}Kind(SyntaxKind kind)", StripPost(nd.Name, "Syntax"), StripPost(field.Name, "Opt"));
+                    OpenBlock();
 
-                    WriteLine("      switch (kind)");
-                    WriteLine("      {");
+                    WriteLine("switch (kind)");
+                    OpenBlock();
 
                     for (int k = 0; k < field.Kinds.Count; k++)
                     {
                         var nKind = nd.Kinds[k];
                         var pKind = field.Kinds[k];
-                        WriteLine("        case SyntaxKind.{0}:", nKind.Name);
-                        WriteLine("          return SyntaxKind.{0};", pKind.Name);
+                        WriteLine("case SyntaxKind.{0}:", nKind.Name);
+                        WriteLine("    return SyntaxKind.{0};", pKind.Name);
                     }
 
-                    WriteLine("        default:");
-                    WriteLine("          throw new ArgumentOutOfRangeException();");
-                    WriteLine("      }");
-                    WriteLine("    }");
+                    WriteLine("default:");
+                    WriteLine("    throw new ArgumentOutOfRangeException();");
+                    CloseBlock();
+                    CloseBlock();
                 }
             }
         }
@@ -1089,8 +1157,8 @@ namespace NalaSyntaxGenerator
 
             this.WriteLine();
 
-            WriteComment(string.Format("<summary>Creates a new {0} instance.</summary>", nd.Name), "    ");
-            Write("    {0} static {1} {2}(", "public", nd.Name, StripPost(nd.Name, "Syntax"));
+            WriteComment(string.Format("<summary>Creates a new {0} instance.</summary>", nd.Name), "");
+            Write("{0} static {1} {2}(", "public", nd.Name, StripPost(nd.Name, "Syntax"));
 
             bool hasPreviousParameter = false;
             if (nd.Kinds.Count > 1)
@@ -1115,9 +1183,9 @@ namespace NalaSyntaxGenerator
             }
             WriteLine(")");
 
-            WriteLine("    {");
+            OpenBlock();
 
-            Write("      return SyntaxFactory.{0}(", StripPost(nd.Name, "Syntax"));
+            Write("return SyntaxFactory.{0}(", StripPost(nd.Name, "Syntax"));
 
             bool hasPreviousArgument = false;
             if (nd.Kinds.Count > 1)
@@ -1149,7 +1217,7 @@ namespace NalaSyntaxGenerator
 
             WriteLine(");");
 
-            WriteLine("    }");
+            CloseBlock();
         }
 
         private Field DetermineMinimalOptionalField(Node nd)
@@ -1210,8 +1278,8 @@ namespace NalaSyntaxGenerator
 
             this.WriteLine();
 
-            WriteComment(string.Format("<summary>Creates a new {0} instance.</summary>", nd.Name), "    ");
-            Write("    {0} static {1} {2}(", "public", nd.Name, StripPost(nd.Name, "Syntax"));
+            WriteComment(string.Format("<summary>Creates a new {0} instance.</summary>", nd.Name), "");
+            Write("{0} static {1} {2}(", "public", nd.Name, StripPost(nd.Name, "Syntax"));
 
             bool hasPreviousParameter = false;
             if (nd.Kinds.Count > 1)
@@ -1255,9 +1323,9 @@ namespace NalaSyntaxGenerator
             }
             WriteLine(")");
 
-            WriteLine("    {");
+            OpenBlock();
 
-            Write("      return SyntaxFactory.{0}(", StripPost(nd.Name, "Syntax"));
+            Write("return SyntaxFactory.{0}(", StripPost(nd.Name, "Syntax"));
 
             bool hasPreviousArgument = false;
             if (nd.Kinds.Count > 1)
@@ -1309,7 +1377,7 @@ namespace NalaSyntaxGenerator
 
             WriteLine(");");
 
-            WriteLine("    }");
+            CloseBlock();
         }
 
         private bool CanAutoConvertFromString(Field field)

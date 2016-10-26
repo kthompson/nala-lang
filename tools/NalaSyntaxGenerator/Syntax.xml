@@ -9,8 +9,26 @@
   <Token Name="ClassKeyword" Content="class" />
   <Token Name="ObjectKeyword" Content="object" />
   <Token Name="CaseKeyword" Content="case" />
+  <Token Name="DefKeyword" Content="def" />
+  
   <Token Name="OpenBracketToken" Content="{" />
   <Token Name="CloseBracketToken" Content="}" />
+  <Token Name="OpenParenToken" Content="(" />
+  <Token Name="CloseParenToken" Content=")" />
+  <Token Name="CommaToken" Content="," />
+  <Token Name="ColonToken" Content=":" />
+  <Token Name="EqualsToken" Content="=" />
+  <Token Name="PlusToken" Content="+" />
+  <Token Name="AsteriskToken" Content="*" />
+  <Token Name="SlashToken" Content="/" />
+  <Token Name="EqualsEqualsToken" Content="==" />
+  <Token Name="GreaterThanEqualsToken" Content="&gt;=" />
+  <Token Name="LessThanEqualsToken" Content="&lt;=" />
+  <Token Name="MinusToken" Content="-" />
+  <Token Name="PercentToken" Content="%" />
+  <Token Name="LessThanToken" Content="&lt;" />
+  <Token Name="AmpersandAmpersandToken" Content="&amp;&amp;" />
+  <Token Name="QuestionQuestionToken" Content="??" />
 
   <PredefinedNode Name="SyntaxToken" Base="SyntaxNode"/>
   <PredefinedNode Name="SyntaxTrivia" Base="SyntaxNode"/>
@@ -79,18 +97,18 @@
   </AbstractNode>
   
   <!-- Expressions -->
-  <AbstractNode Name="ExpressionSyntax" Base="SyntaxNode">
+  <AbstractNode Name="ExpressionSyntax" Base="MemberDeclarationSyntax">
     <TypeComment>
       <summary>Provides the base class from which the classes that represent expression syntax nodes are derived. This is an abstract class.</summary>
     </TypeComment>
   </AbstractNode>
-    
+  
   <!-- Declarations -->
   <Node Name="CompilationUnitSyntax" Base="SyntaxNode">
     <Kind Name="CompilationUnit"/>
     <Field Name="Namespace" Type="NamespaceDeclarationSyntax" Optional="true" />
     <Field Name="Usings" Type="SyntaxList&lt;OpenDirectiveSyntax&gt;"/>
-    <Field Name="Members" Type="SyntaxList&lt;TopLevelMemberDeclarationSyntax&gt;"/>
+    <Field Name="Members" Type="SyntaxList&lt;TypeDeclarationSyntax&gt;"/>
     <Field Name="EndOfFileToken" Type="SyntaxToken">
       <Kind Name="EndOfFileToken"/>
     </Field>
@@ -112,59 +130,26 @@
     <Field Name="Name" Type="NameSyntax"/>
   </Node>
 
-  <AbstractNode Name="BaseMemberDeclarationSyntax" Base="SyntaxNode" />
-  <AbstractNode Name="MemberDeclarationSyntax" Base="BaseMemberDeclarationSyntax" />
-  <AbstractNode Name="TopLevelMemberDeclarationSyntax" Base="BaseMemberDeclarationSyntax" />
+  <AbstractNode Name="MemberDeclarationSyntax" Base="SyntaxNode" />
+  <AbstractNode Name="TypeDeclarationSyntax" Base="MemberDeclarationSyntax" />
 
-  <Node Name="TraitDeclarationSyntax" Base="TopLevelMemberDeclarationSyntax">
+  <Node Name="TraitDeclarationSyntax" Base="TypeDeclarationSyntax">
     <Kind Name="TraitDeclaration"/>
     <Field Name="TraitKeyword" Type="SyntaxToken">
       <Kind Name="TraitKeyword"/>
     </Field>
     <Field Name="Name" Type="SimpleNameSyntax"/>
-
-    <Field Name="OpenBracketToken" Type="SyntaxToken">
-      <Kind Name="OpenBracketToken"/>
-      <PropertyComment>
-        <summary>SyntaxToken representing open bracket.</summary>
-      </PropertyComment>
-    </Field>
-
-    <Field Name="Members" Type="SyntaxList&lt;BaseMemberDeclarationSyntax&gt;" />
-
-    <Field Name="CloseBracketToken" Type="SyntaxToken">
-      <Kind Name="CloseBracketToken"/>
-      <PropertyComment>
-        <summary>SyntaxToken representing close bracket.</summary>
-      </PropertyComment>
-    </Field>
+    <Field Name="Body" Type="MemberBodySyntax" Optional="true" />
   </Node>
-
-  <Node Name="ObjectDeclarationSyntax" Base="TopLevelMemberDeclarationSyntax">
+  <Node Name="ObjectDeclarationSyntax" Base="TypeDeclarationSyntax">
     <Kind Name="ObjectDeclaration"/>
     <Field Name="ObjectKeyword" Type="SyntaxToken">
       <Kind Name="ObjectKeyword"/>
     </Field>
     <Field Name="Name" Type="SimpleNameSyntax"/>
-
-    <Field Name="OpenBracketToken" Type="SyntaxToken">
-      <Kind Name="OpenBracketToken"/>
-      <PropertyComment>
-        <summary>SyntaxToken representing open bracket.</summary>
-      </PropertyComment>
-    </Field>
-
-    <Field Name="Members" Type="SyntaxList&lt;BaseMemberDeclarationSyntax&gt;" />
-
-    <Field Name="CloseBracketToken" Type="SyntaxToken">
-      <Kind Name="CloseBracketToken"/>
-      <PropertyComment>
-        <summary>SyntaxToken representing close bracket.</summary>
-      </PropertyComment>
-    </Field>
+    <Field Name="Body" Type="MemberBodySyntax" Optional="true" />
   </Node>
-
-  <Node Name="ClassDeclarationSyntax" Base="TopLevelMemberDeclarationSyntax">
+  <Node Name="ClassDeclarationSyntax" Base="TypeDeclarationSyntax">
     <Kind Name="ClassDeclaration"/>
     <Field Name="CaseKeyword" Type="SyntaxToken" Optional="true">
       <Kind Name="CaseKeyword"/>
@@ -173,7 +158,12 @@
       <Kind Name="ClassKeyword"/>
     </Field>
     <Field Name="Name" Type="SimpleNameSyntax"/>
-
+    
+    <Field Name="Arguments" Type="ParameterListSyntax" Optional="true" />
+    <Field Name="Body" Type="MemberBodySyntax" Optional="true" />
+  </Node>
+  <Node Name="MemberBodySyntax" Base="SyntaxNode">
+    <Kind Name="MemberBodyDeclaration"/>
     <Field Name="OpenBracketToken" Type="SyntaxToken">
       <Kind Name="OpenBracketToken"/>
       <PropertyComment>
@@ -181,7 +171,7 @@
       </PropertyComment>
     </Field>
 
-    <Field Name="Members" Type="SyntaxList&lt;BaseMemberDeclarationSyntax&gt;" />
+    <Field Name="Members" Type="SyntaxList&lt;MemberDeclarationSyntax&gt;" />
 
     <Field Name="CloseBracketToken" Type="SyntaxToken">
       <Kind Name="CloseBracketToken"/>
@@ -191,28 +181,163 @@
     </Field>
   </Node>
 
-  <AbstractNode Name="BaseMethodDeclarationSyntax" Base="TopLevelMemberDeclarationSyntax">
-    <Kind Name="ClassDeclaration"/>
-    <Field Name="ClassKeyword" Type="SyntaxToken">
-      <Kind Name="ClassKeyword"/>
+  <Node Name="ParameterListSyntax" Base="SyntaxNode">
+    <TypeComment>
+      <summary>Parameter list syntax.</summary>
+    </TypeComment>
+    <Kind Name="ParameterList"/>
+    <Field Name="OpenParenToken" Type="SyntaxToken">
+      <PropertyComment>
+        <summary>Gets the open paren token.</summary>
+      </PropertyComment>
+      <Kind Name="OpenParenToken"/>
+    </Field>
+    <Field Name="Parameters" Type="SeparatedSyntaxList&lt;ParameterSyntax&gt;" />
+    <Field Name="CloseParenToken" Type="SyntaxToken">
+      <PropertyComment>
+        <summary>Gets the close paren token.</summary>
+      </PropertyComment>
+      <Kind Name="CloseParenToken"/>
+    </Field>
+  </Node>
+
+  <Node Name="ParameterSyntax" Base="SyntaxNode">
+    <TypeComment>
+      <summary>Parameter syntax.</summary>
+    </TypeComment>
+    <Kind Name="Parameter"/>
+    <!--<Field Name="AttributeLists" Type="SyntaxList&lt;AttributeListSyntax&gt;">
+      <PropertyComment>
+        <summary>Gets the attribute declaration list.</summary>
+      </PropertyComment>
+    </Field>-->
+    <!--<Field Name="Modifiers" Type="SyntaxList&lt;SyntaxToken&gt;">
+      <PropertyComment>
+        <summary>Gets the modifier list.</summary>
+      </PropertyComment>
+    </Field>-->
+    <Field Name="Identifier" Type="SyntaxToken">
+      <PropertyComment>
+        <summary>Gets the identifier.</summary>
+      </PropertyComment>
+      <Kind Name="IdentifierToken"/>
+    </Field>
+    <Field Name="TypeAnnotation" Type="TypeAnnotationSyntax" />
+  </Node>
+
+  <Node Name="TypeAnnotationSyntax" Base="SyntaxNode">
+    <Kind Name="TypeAnnotation"/>
+    <Field Name="ColonToken" Type="SyntaxToken">
+      <Kind Name="ColonToken"/>
+    </Field>
+    <Field Name="Type" Type="TypeSyntax" />
+  </Node>
+
+  <Node Name="MethodDeclarationSyntax" Base="MemberDeclarationSyntax">
+    <Kind Name="MethodDeclaration"/>
+
+    <Field Name="DefKeyword" Type="SyntaxToken">
+      <Kind Name="DefKeyword"/>
     </Field>
     <Field Name="Name" Type="SimpleNameSyntax"/>
+    <Field Name="Arguments" Type="ParameterListSyntax" Optional="true" />
+    <Field Name="ReturnType" Type="TypeAnnotationSyntax" Optional="true" />
+    <Field Name="Assignment" Type="AssignmentSyntax" Optional="true" />
+  </Node>
+
+  <Node Name="AssignmentSyntax" Base="SyntaxNode">
+    <Kind Name="Assignment"/>
+    
+    <Field Name="EqualsToken" Type="SyntaxToken">
+      <Kind Name="EqualsToken"/>
+    </Field>
+    
+    <Field Name="Expression" Type="ExpressionSyntax">
+      <Kind Name="Expression"/>
+    </Field>
+  </Node>
+
+  <Node Name="BlockSyntax" Base="ExpressionSyntax">
+    <Kind Name="Block"/>
 
     <Field Name="OpenBracketToken" Type="SyntaxToken">
       <Kind Name="OpenBracketToken"/>
-      <PropertyComment>
-        <summary>SyntaxToken representing open bracket.</summary>
-      </PropertyComment>
     </Field>
-
-    <Field Name="Members" Type="SyntaxList&lt;BaseMemberDeclarationSyntax&gt;" />
-
+    
+    <Field Name="Members" Type="SyntaxList&lt;MemberDeclarationSyntax&gt;" />
+    
     <Field Name="CloseBracketToken" Type="SyntaxToken">
       <Kind Name="CloseBracketToken"/>
+    </Field>
+  </Node>
+
+
+  <!--<Node Name="BinaryExpressionSyntax" Base="ExpressionSyntax">
+    <Kind Name="AddExpression"/>
+    <Kind Name="SubtractExpression"/>
+    <Kind Name="MultiplyExpression"/>
+    <Kind Name="DivideExpression"/>
+    <Kind Name="ModuloExpression"/>
+    <Kind Name="LeftShiftExpression"/>
+    <Kind Name="RightShiftExpression"/>
+    <Kind Name="LogicalOrExpression"/>
+    <Kind Name="LogicalAndExpression"/>
+    <Kind Name="BitwiseOrExpression"/>
+    <Kind Name="BitwiseAndExpression"/>
+    <Kind Name="ExclusiveOrExpression"/>
+    <Kind Name="EqualsExpression"/>
+    <Kind Name="NotEqualsExpression"/>
+    <Kind Name="LessThanExpression"/>
+    <Kind Name="LessThanOrEqualExpression"/>
+    <Kind Name="GreaterThanExpression"/>
+    <Kind Name="GreaterThanOrEqualExpression"/>
+    <Kind Name="IsExpression"/>
+    <Kind Name="AsExpression"/>
+    <Kind Name="CoalesceExpression"/>
+    <Field Name="Left" Type="ExpressionSyntax">
       <PropertyComment>
-        <summary>SyntaxToken representing close bracket.</summary>
+        <summary>ExpressionSyntax node representing the expression on the left of the binary operator.</summary>
       </PropertyComment>
     </Field>
-  </AbstractNode>
+    <Field Name="OperatorToken" Type="SyntaxToken">
+      <Kind Name="PlusToken"/>
+      <Kind Name="MinusToken"/>
+      <Kind Name="AsteriskToken"/>
+      <Kind Name="SlashToken"/>
+      <Kind Name="PercentToken"/>
+      <Kind Name="LessThanLessThanToken"/>
+      <Kind Name="GreaterThanGreaterThanToken"/>
+      <Kind Name="BarBarToken"/>
+      <Kind Name="AmpersandAmpersandToken"/>
+      <Kind Name="BarToken"/>
+      <Kind Name="AmpersandToken"/>
+      <Kind Name="CaretToken"/>
+      <Kind Name="EqualsEqualsToken"/>
+      <Kind Name="ExclamationEqualsToken"/>
+      <Kind Name="LessThanToken"/>
+      <Kind Name="LessThanEqualsToken"/>
+      <Kind Name="GreaterThanToken"/>
+      <Kind Name="GreaterThanEqualsToken"/>
+      <Kind Name="IsKeyword"/>
+      <Kind Name="AsKeyword"/>
+      <Kind Name="QuestionQuestionToken"/>
+      <PropertyComment>
+        <summary>SyntaxToken representing the operator of the binary expression.</summary>
+      </PropertyComment>
+    </Field>
+    <Field Name="Right" Type="ExpressionSyntax">
+      <PropertyComment>
+        <summary>ExpressionSyntax node representing the expression on the right of the binary operator.</summary>
+      </PropertyComment>
+    </Field>
+    <TypeComment>
+      <summary>Class which represents an expression that has a binary operator.</summary>
+    </TypeComment>
+    <FactoryComment>
+      <summary>Creates an BinaryExpressionSyntax node.</summary>
+    </FactoryComment>
+  </Node>-->
 
+  <!--<Node Name="ValDeclarationSyntax" Base="MemberDeclarationSyntax">
+  </Node>-->
 </Tree>

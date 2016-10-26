@@ -562,12 +562,18 @@
         
 
         OpenKeyword = 10240,
-        OpenDirective,
-        ObjectDeclaration,
-
         TraitKeyword,
-        TraitDeclaration,
+        DefKeyword,
 
+
+        OpenDirective,
+
+        ObjectDeclaration,
+        TraitDeclaration,
+        MemberBodyDeclaration,
+
+        TypeAnnotation,
+        Assignment,
 
     }
 }
