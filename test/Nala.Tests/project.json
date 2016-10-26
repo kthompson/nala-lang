@@ -1,0 +1,35 @@
+﻿{
+  "version": "1.0.0-*",
+  "buildOptions": {
+    "debugType": "portable",
+    "copyToOutput": {
+      "include": [ "xunit.runner.json" ]
+    }
+  },
+
+  "dependencies": {
+    "xunit": "2.2.0-beta3-build3402",
+    "dotnet-test-xunit": "2.2.0-preview2-build1029",
+    "Nala": {
+      "target": "project" 
+    }
+  },
+  "testRunner": "xunit",
+
+  "frameworks": {
+    "netcoreapp1.0": {
+      "dependencies": {
+        "Microsoft.NETCore.App": {
+          "type": "platform",
+          "version": "1.0.1"
+        }
+      },
+      "imports": [
+        "dnxcore50",
+        "dotnet5.4",
+        "portable-net451+win8",
+        "portable-net45+win8+wp8+wpa81"
+      ]
+    }
+  }
+}

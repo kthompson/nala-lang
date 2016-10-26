@@ -1,14 +1,12 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
+﻿using System.Threading.Tasks;
+using Nala.Syntax;
 
-namespace Nala
-{
+
+
     public class Program
     {
         public static void Main(string[] args)
         {
         }
     }
-}
+

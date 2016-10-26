@@ -12,6 +12,16 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution 
 EndProject
 Project("{8BB2217D-0F2D-49D1-97BC-3654ED321F3B}") = "Nala", "src\Nala\Nala.xproj", "{2D720B6A-4E1B-409D-8C8B-5FBFEC5FC1BE}"
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "test", "test", "{442FC928-F6B6-4C1F-B79E-CE53E43C5AB9}"
+EndProject
+Project("{8BB2217D-0F2D-49D1-97BC-3654ED321F3B}") = "Nala.Tests", "test\Nala.Tests\Nala.Tests.xproj", "{AEE49C8B-6585-4F51-B8E0-20644C8D9696}"
+EndProject
+Project("{8BB2217D-0F2D-49D1-97BC-3654ED321F3B}") = "GosuParser", "..\AppDev\GosuParser\src\GosuParser\GosuParser.xproj", "{5AE378CE-987A-4E3E-BB5A-68CCEC0233AA}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "tools", "tools", "{BEF2C00E-05B9-49C8-B74D-98ED12A54FCB}"
+EndProject
+Project("{8BB2217D-0F2D-49D1-97BC-3654ED321F3B}") = "NalaSyntaxGenerator", "tools\NalaSyntaxGenerator\NalaSyntaxGenerator.xproj", "{22C0CDEF-B8E0-4BF2-A51D-348F9F0ABCD5}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -22,11 +32,25 @@ Global
 		{2D720B6A-4E1B-409D-8C8B-5FBFEC5FC1BE}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{2D720B6A-4E1B-409D-8C8B-5FBFEC5FC1BE}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{2D720B6A-4E1B-409D-8C8B-5FBFEC5FC1BE}.Release|Any CPU.Build.0 = Release|Any CPU
+		{AEE49C8B-6585-4F51-B8E0-20644C8D9696}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{AEE49C8B-6585-4F51-B8E0-20644C8D9696}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{AEE49C8B-6585-4F51-B8E0-20644C8D9696}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{AEE49C8B-6585-4F51-B8E0-20644C8D9696}.Release|Any CPU.Build.0 = Release|Any CPU
+		{5AE378CE-987A-4E3E-BB5A-68CCEC0233AA}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{5AE378CE-987A-4E3E-BB5A-68CCEC0233AA}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{5AE378CE-987A-4E3E-BB5A-68CCEC0233AA}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{5AE378CE-987A-4E3E-BB5A-68CCEC0233AA}.Release|Any CPU.Build.0 = Release|Any CPU
+		{22C0CDEF-B8E0-4BF2-A51D-348F9F0ABCD5}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{22C0CDEF-B8E0-4BF2-A51D-348F9F0ABCD5}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{22C0CDEF-B8E0-4BF2-A51D-348F9F0ABCD5}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{22C0CDEF-B8E0-4BF2-A51D-348F9F0ABCD5}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
 	EndGlobalSection
 	GlobalSection(NestedProjects) = preSolution
 		{2D720B6A-4E1B-409D-8C8B-5FBFEC5FC1BE} = {05A6E3D1-EC80-4101-97D8-1436BDA788F5}
+		{AEE49C8B-6585-4F51-B8E0-20644C8D9696} = {442FC928-F6B6-4C1F-B79E-CE53E43C5AB9}
+		{22C0CDEF-B8E0-4BF2-A51D-348F9F0ABCD5} = {BEF2C00E-05B9-49C8-B74D-98ED12A54FCB}
 	EndGlobalSection
 EndGlobal

@@ -1,0 +1,9 @@
+{
+  "profiles": {
+    "run": {},
+    "NalaSyntaxGenerator": {
+      "commandName": "Project",
+      "commandLineArgs": "E:\\code\\NalaLang\\tools\\NalaSyntaxGenerator\\Syntax.xml E:\\code\\NalaLang\\src\\Nala\\Syntax\\"
+    }
+  }
+}

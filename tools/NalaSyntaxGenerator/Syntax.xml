@@ -1,0 +1,218 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Copyright (c)  Microsoft.  All Rights Reserved.  Licensed under the Apache License, Version 2.0.  See License.txt in the project root for license information. -->
+
+<Tree Root="SyntaxNode">
+  <Token Name="DotToken" Content="." />
+  <Token Name="OpenKeyword" Content="open" />
+  <Token Name="NamespaceKeyword" Content="namespace" />
+  <Token Name="TraitKeyword" Content="trait" />
+  <Token Name="ClassKeyword" Content="class" />
+  <Token Name="ObjectKeyword" Content="object" />
+  <Token Name="CaseKeyword" Content="case" />
+  <Token Name="OpenBracketToken" Content="{" />
+  <Token Name="CloseBracketToken" Content="}" />
+
+  <PredefinedNode Name="SyntaxToken" Base="SyntaxNode"/>
+  <PredefinedNode Name="SyntaxTrivia" Base="SyntaxNode"/>
+  <!-- Names -->
+  <AbstractNode Name="NameSyntax" Base="TypeSyntax">
+    <TypeComment>
+      <summary>Provides the base class from which the classes that represent name syntax nodes are derived. This is an abstract class.</summary>
+    </TypeComment>
+  </AbstractNode>
+  <AbstractNode Name="SimpleNameSyntax" Base="NameSyntax">
+    <Field Name="Identifier" Type="SyntaxToken">
+      <PropertyComment>
+        <summary>SyntaxToken representing the identifier of the simple name.</summary>
+      </PropertyComment>
+      <Kind Name="IdentifierToken" />
+    </Field>
+    <TypeComment>
+      <summary>Provides the base class from which the classes that represent simple name syntax nodes are derived. This is an abstract class.</summary>
+    </TypeComment>
+  </AbstractNode>
+  <Node Name="IdentifierNameSyntax" Base="SimpleNameSyntax">
+    <Kind Name="IdentifierName"/>
+    <Field Name="Identifier" Type="SyntaxToken" Override="true">
+      <Kind Name="IdentifierToken"/>
+      <PropertyComment>
+        <summary>SyntaxToken representing the keyword for the kind of the identifier name.</summary>
+      </PropertyComment>
+    </Field>
+    <TypeComment>
+      <summary>Class which represents the syntax node for identifier name.</summary>
+    </TypeComment>
+    <FactoryComment>
+      <summary>Creates an IdentifierNameSyntax node.</summary>
+    </FactoryComment>
+  </Node>
+  <Node Name="QualifiedNameSyntax" Base="NameSyntax">
+    <Kind Name="QualifiedName"/>
+    <Field Name="Left" Type="NameSyntax">
+      <PropertyComment>
+        <summary>NameSyntax node representing the name on the left side of the dot token of the qualified name.</summary>
+      </PropertyComment>
+    </Field>
+    <Field Name="DotToken" Type="SyntaxToken">
+      <Kind Name="DotToken"/>
+      <PropertyComment>
+        <summary>SyntaxToken representing the dot.</summary>
+      </PropertyComment>
+    </Field>
+    <Field Name="Right" Type="SimpleNameSyntax">
+      <PropertyComment>
+        <summary>SimpleNameSyntax node representing the name on the right side of the dot token of the qualified name.</summary>
+      </PropertyComment>
+    </Field>
+    <TypeComment>
+      <summary>Class which represents the syntax node for qualified name.</summary>
+    </TypeComment>
+    <FactoryComment>
+      <summary>Creates an QualifiedNameSyntax node.</summary>
+    </FactoryComment>
+  </Node>
+  <!-- Type names -->
+  <AbstractNode Name="TypeSyntax" Base="ExpressionSyntax">
+    <TypeComment>
+      <summary>Provides the base class from which the classes that represent type syntax nodes are derived. This is an abstract class.</summary>
+    </TypeComment>
+  </AbstractNode>
+  
+  <!-- Expressions -->
+  <AbstractNode Name="ExpressionSyntax" Base="SyntaxNode">
+    <TypeComment>
+      <summary>Provides the base class from which the classes that represent expression syntax nodes are derived. This is an abstract class.</summary>
+    </TypeComment>
+  </AbstractNode>
+    
+  <!-- Declarations -->
+  <Node Name="CompilationUnitSyntax" Base="SyntaxNode">
+    <Kind Name="CompilationUnit"/>
+    <Field Name="Namespace" Type="NamespaceDeclarationSyntax" Optional="true" />
+    <Field Name="Usings" Type="SyntaxList&lt;OpenDirectiveSyntax&gt;"/>
+    <Field Name="Members" Type="SyntaxList&lt;TopLevelMemberDeclarationSyntax&gt;"/>
+    <Field Name="EndOfFileToken" Type="SyntaxToken">
+      <Kind Name="EndOfFileToken"/>
+    </Field>
+  </Node>
+
+  <Node Name="NamespaceDeclarationSyntax" Base="SyntaxNode">
+    <Kind Name="NamespaceDeclaration"/>
+    <Field Name="NamespaceKeyword" Type="SyntaxToken">
+      <Kind Name="NamespaceKeyword"/>
+    </Field>
+    <Field Name="Name" Type="NameSyntax"/>
+  </Node>
+
+  <Node Name="OpenDirectiveSyntax" Base="SyntaxNode">
+    <Kind Name="OpenDirective"/>
+    <Field Name="OpenKeyword" Type="SyntaxToken">
+      <Kind Name="OpenKeyword"/>
+    </Field>
+    <Field Name="Name" Type="NameSyntax"/>
+  </Node>
+
+  <AbstractNode Name="BaseMemberDeclarationSyntax" Base="SyntaxNode" />
+  <AbstractNode Name="MemberDeclarationSyntax" Base="BaseMemberDeclarationSyntax" />
+  <AbstractNode Name="TopLevelMemberDeclarationSyntax" Base="BaseMemberDeclarationSyntax" />
+
+  <Node Name="TraitDeclarationSyntax" Base="TopLevelMemberDeclarationSyntax">
+    <Kind Name="TraitDeclaration"/>
+    <Field Name="TraitKeyword" Type="SyntaxToken">
+      <Kind Name="TraitKeyword"/>
+    </Field>
+    <Field Name="Name" Type="SimpleNameSyntax"/>
+
+    <Field Name="OpenBracketToken" Type="SyntaxToken">
+      <Kind Name="OpenBracketToken"/>
+      <PropertyComment>
+        <summary>SyntaxToken representing open bracket.</summary>
+      </PropertyComment>
+    </Field>
+
+    <Field Name="Members" Type="SyntaxList&lt;BaseMemberDeclarationSyntax&gt;" />
+
+    <Field Name="CloseBracketToken" Type="SyntaxToken">
+      <Kind Name="CloseBracketToken"/>
+      <PropertyComment>
+        <summary>SyntaxToken representing close bracket.</summary>
+      </PropertyComment>
+    </Field>
+  </Node>
+
+  <Node Name="ObjectDeclarationSyntax" Base="TopLevelMemberDeclarationSyntax">
+    <Kind Name="ObjectDeclaration"/>
+    <Field Name="ObjectKeyword" Type="SyntaxToken">
+      <Kind Name="ObjectKeyword"/>
+    </Field>
+    <Field Name="Name" Type="SimpleNameSyntax"/>
+
+    <Field Name="OpenBracketToken" Type="SyntaxToken">
+      <Kind Name="OpenBracketToken"/>
+      <PropertyComment>
+        <summary>SyntaxToken representing open bracket.</summary>
+      </PropertyComment>
+    </Field>
+
+    <Field Name="Members" Type="SyntaxList&lt;BaseMemberDeclarationSyntax&gt;" />
+
+    <Field Name="CloseBracketToken" Type="SyntaxToken">
+      <Kind Name="CloseBracketToken"/>
+      <PropertyComment>
+        <summary>SyntaxToken representing close bracket.</summary>
+      </PropertyComment>
+    </Field>
+  </Node>
+
+  <Node Name="ClassDeclarationSyntax" Base="TopLevelMemberDeclarationSyntax">
+    <Kind Name="ClassDeclaration"/>
+    <Field Name="CaseKeyword" Type="SyntaxToken" Optional="true">
+      <Kind Name="CaseKeyword"/>
+    </Field>
+    <Field Name="ClassKeyword" Type="SyntaxToken">
+      <Kind Name="ClassKeyword"/>
+    </Field>
+    <Field Name="Name" Type="SimpleNameSyntax"/>
+
+    <Field Name="OpenBracketToken" Type="SyntaxToken">
+      <Kind Name="OpenBracketToken"/>
+      <PropertyComment>
+        <summary>SyntaxToken representing open bracket.</summary>
+      </PropertyComment>
+    </Field>
+
+    <Field Name="Members" Type="SyntaxList&lt;BaseMemberDeclarationSyntax&gt;" />
+
+    <Field Name="CloseBracketToken" Type="SyntaxToken">
+      <Kind Name="CloseBracketToken"/>
+      <PropertyComment>
+        <summary>SyntaxToken representing close bracket.</summary>
+      </PropertyComment>
+    </Field>
+  </Node>
+
+  <AbstractNode Name="BaseMethodDeclarationSyntax" Base="TopLevelMemberDeclarationSyntax">
+    <Kind Name="ClassDeclaration"/>
+    <Field Name="ClassKeyword" Type="SyntaxToken">
+      <Kind Name="ClassKeyword"/>
+    </Field>
+    <Field Name="Name" Type="SimpleNameSyntax"/>
+
+    <Field Name="OpenBracketToken" Type="SyntaxToken">
+      <Kind Name="OpenBracketToken"/>
+      <PropertyComment>
+        <summary>SyntaxToken representing open bracket.</summary>
+      </PropertyComment>
+    </Field>
+
+    <Field Name="Members" Type="SyntaxList&lt;BaseMemberDeclarationSyntax&gt;" />
+
+    <Field Name="CloseBracketToken" Type="SyntaxToken">
+      <Kind Name="CloseBracketToken"/>
+      <PropertyComment>
+        <summary>SyntaxToken representing close bracket.</summary>
+      </PropertyComment>
+    </Field>
+  </AbstractNode>
+
+</Tree>
